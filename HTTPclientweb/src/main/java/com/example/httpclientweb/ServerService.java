@@ -16,18 +16,39 @@ public class ServerService implements ClientWebInterface {
   //Update the id and game state on the server
     @Override
     public void updateGame(String id, String gameState) {
-        Server server = findServer(id);
+        Server server = findServerID(id);
         server.setGameState(gameState);
         if (server.getPlayersOnBoard() != 0) //if the max amount of player is set, we are done
             return;
         server.setPlayersOnBoard(StringUtils.countOccurrencesOf(gameState, "Player "));
     }
 
+    @Override
+    public String joinToGame(String serverToJoin) {
+        Server s = findServerID(serverToJoin);
+        if (s == null)
+            return "Server does not exist";
+        if (s.getAmountOfPlayers() >= s.getPlayersOnBoard())
+            return "The Server is full";
+        s.addPlayer();
+        return String.valueOf(s.getRobot());
+    }
+
+
+    @Override
+    public void leaveTheGame(String serverId, int robot) {
+        Server server = findServerID(serverId);
+        assert server != null;
+        server.setPlayerSpotFilled(robot, false);
+        server.removePlayer();
+        if (server.isEmpty())
+            servers.remove(server);
+    }
 
     // get game state from the server and return it in jason file
     @Override
     public String getGameState(String serverId) {
-        return (findServer(serverId)).getGameState();
+        return (findServerID(serverId)).getGameState();
     }
 
 
@@ -42,7 +63,7 @@ public class ServerService implements ClientWebInterface {
 
     // return list of server
     @Override
-    public String listGames() {
+    public String listOfGames() {
         Gson gson = new Gson();
 
         ArrayList<Server> server = new ArrayList<>();
@@ -55,30 +76,7 @@ public class ServerService implements ClientWebInterface {
     }
 
 
-    @Override
-    public String joinGame(String serverToJoin) {
-        Server s = findServer(serverToJoin);
-        if (s == null)
-            return "Server doesn't exist";
-        if (s.getAmountOfPlayers() >= s.getPlayersOnBoard())
-            return "Server is full";
-        s.addPlayer();
-        return String.valueOf(s.getARobot());
-    }
-
-
-    @Override
-    public void leaveGame(String serverId, int robot) {
-        Server server = findServer(serverId);
-        assert server != null;
-        server.setPlayerSpotFilled(robot, false);
-        server.removePlayer();
-        if (server.isEmpty())
-            servers.remove(server);
-    }
-
-
-    private Server findServer(String serverId) {
+    private Server findServerID(String serverId) {
         for (Server e : servers) {
             if (Objects.equals(e.getId(), serverId)) {
                 return e;

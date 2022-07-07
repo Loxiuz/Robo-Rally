@@ -54,7 +54,6 @@ public class SerializeState {
 
             playerTemplate.name = player.name;
             playerTemplate.color = player.color;
-            playerTemplate.energyCount = player.energyCount;
             playerTemplate.checkPoints = player.checkPoints;
             playerTemplate.priority = player.priority;
             playerTemplate.spaceX = player.space.x;
@@ -176,7 +175,6 @@ public class SerializeState {
 
             newPlayer.setSpace(result.getSpace(playerTemplate.spaceX, playerTemplate.spaceY));
             newPlayer.heading = Heading.valueOf(playerTemplate.heading);
-            newPlayer.energyCount = playerTemplate.energyCount;
             newPlayer.checkPoints = playerTemplate.checkPoints;
             newPlayer.priority = playerTemplate.priority;
 

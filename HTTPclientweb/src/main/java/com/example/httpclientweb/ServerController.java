@@ -13,7 +13,6 @@ public class ServerController {
     private ClientWebInterface webStatus;
 
 
-
     @PostMapping(value = "/game")
     public ResponseEntity<String> createGame(@RequestBody String s) {
         String newServerID = webStatus.hostGame(s);
@@ -25,13 +24,13 @@ public class ServerController {
 
     @GetMapping(value = "/game")
     public ResponseEntity<String> listOfGame() {
-        return ResponseEntity.ok().body(webStatus.listGames());
+        return ResponseEntity.ok().body(webStatus.listOfGames());
     }
 
 
     @PutMapping(value = "/game/{id}")
     public ResponseEntity<String> joinGame(@PathVariable String id) {
-        String response = webStatus.joinGame(id);
+        String response = webStatus.joinToGame(id);
         if (response.equals("Server doesn't exist"))
             return ResponseEntity.status(404).body(response);
         if (response.equals("Server is full"))
@@ -42,7 +41,7 @@ public class ServerController {
 
     @PostMapping(value = "/game/{id}/{robot}")
     public void leaveGame(@PathVariable String id, @PathVariable String robot) {
-        webStatus.leaveGame(id, Integer.parseInt(robot));
+        webStatus.leaveTheGame(id, Integer.parseInt(robot));
     }
 
 

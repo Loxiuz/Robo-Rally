@@ -33,7 +33,7 @@ public class Player extends Subject {
 
     final public static int NO_REGISTERS = 5;
     final public static int NO_CARDS = 8;
-    final public static int ENERGY_START_COUNT = 5;
+    
 
     final public Board board;
 
@@ -42,7 +42,6 @@ public class Player extends Subject {
     public int checkPoints;
     public Space space;
     public Heading heading = SOUTH;
-    public int energyCount;
     public int priority;
 
 
@@ -71,7 +70,6 @@ public class Player extends Subject {
         this.board = board;
         this.name = name;
         this.color = color;
-        this.energyCount = ENERGY_START_COUNT;
         this.damagecards = new ArrayList<>();
         this.space = null;
 
@@ -145,14 +143,6 @@ public class Player extends Subject {
                 space.playerChanged();
             }
         }
-    }
-
-    public void setEnergyCount(int energyCount) {
-        this.energyCount = energyCount;
-    }
-
-    public int getEnergyCount() {
-        return energyCount;
     }
 
 

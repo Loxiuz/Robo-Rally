@@ -6,15 +6,15 @@ package com.example.httpclientweb;
 public interface ClientWebInterface {
     void updateGame(String id, String gameState);
 
-    String joinGame(String serverToJoin);
+    String joinToGame(String serverToJoin);
 
-    void leaveGame(String serverId, int i);
+    void leaveTheGame(String serverId, int i);
 
     String getGameState(String serverId);
 
     String hostGame(String title);
 
-    String listGames();
+    String listOfGames();
 }
 
 
