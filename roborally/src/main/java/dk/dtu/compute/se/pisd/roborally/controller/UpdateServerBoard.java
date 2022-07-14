@@ -8,7 +8,7 @@ import javafx.application.Platform;
 // this class update the board on the server when the game state is received it
 // the deserializes the json file and sends an async message to update the ui.
 
-public class UpdateMultiplayerBoard extends Thread {
+public class UpdateServerBoard extends Thread {
     GameController gameController;
     Client client;
     boolean update = true;
