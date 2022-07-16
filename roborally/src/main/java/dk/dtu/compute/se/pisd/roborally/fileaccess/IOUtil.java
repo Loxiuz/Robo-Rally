@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.FieldAction;
-import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
+import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -67,15 +67,15 @@ public class IOUtil {
 
 
     //Reads game form json in resources folder
-    public static String readGameJson(String resourcePath) throws BoardNotFoundException {
+    public static String readGameJson(String resourcePath) throws BoardDoesNotExistException {
         try {
             ClassLoader classLoader = IOUtil.class.getClassLoader();
             InputStream inputStream = classLoader.getResourceAsStream(resourcePath);
-            if (inputStream == null) throw new BoardNotFoundException(resourcePath);
+            if (inputStream == null) throw new BoardDoesNotExistException(resourcePath);
 
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8); // Eight-bit UCS Transformation Format.
         } catch (IOException e) {
-            throw new BoardNotFoundException(resourcePath);
+            throw new BoardDoesNotExistException(resourcePath);
         }
     }
 

@@ -2,7 +2,7 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.StartGear;
-import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
+import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.IOUtil;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
@@ -38,7 +38,7 @@ public class SaveAndLoad {
 
 
     // player can load a board game
-    public static Board loadBoardGame(String name) throws BoardNotFoundException {
+    public static Board loadBoardGame(String name) throws BoardDoesNotExistException {
         String resourcePath = SAVEDBOARDS + "/" + name + "." + JSONFile;
         String json = IOUtil.readGameJson(resourcePath);
 
@@ -47,7 +47,7 @@ public class SaveAndLoad {
     }
 
 
-    public static Board newBoard(int numPlayers, String boardName) throws BoardNotFoundException {
+    public static Board newBoard(int numPlayers, String boardName) throws BoardDoesNotExistException {
         NewBoard = true;
 
 

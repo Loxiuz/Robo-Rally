@@ -1,10 +1,9 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
-import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
+import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,7 +104,7 @@ class GameControllerTest {
 
             gc.moveCurrentPlayerToSpace(board.getSpace(4, 9)); // Will cause exception
 
-        } catch (BoardNotFoundException e) {
+        } catch (BoardDoesNotExistException e) {
             Assertions.fail(); // Board not found
         } catch (ExceptionInInitializerError e2) {
             Assertions.assertEquals(3, board.getCurrentPlayer().checkPoints);

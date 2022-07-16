@@ -1,6 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
-import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
+import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +18,7 @@ public class SerializeTest {
             String jsonResult2 = SerializeState.serializeGame(board1);
 
             Assertions.assertEquals(jsonResult1, jsonResult2);
-        } catch (BoardNotFoundException e) {
+        } catch (BoardDoesNotExistException e) {
             assert true;
         }
     }

@@ -25,7 +25,7 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Observer;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.httpclient.Client;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
-import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
+import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.IOUtil;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
@@ -82,7 +82,7 @@ public class AppController implements Observer {
                 setupGameController(board);
                 if (client.isConnectedToServer())
                     client.updateGame(SerializeState.serializeGame(board));
-            } catch (BoardNotFoundException e) {
+            } catch (BoardDoesNotExistException e) {
                 createNewGame(numPlayers, true);
             }
         }
@@ -147,7 +147,7 @@ public class AppController implements Observer {
 
                 Board board = SaveAndLoad.loadBoardGame(chosenBoard.get());
                 setupGameController(board);
-            } catch (BoardNotFoundException e) {
+            } catch (BoardDoesNotExistException e) {
                 createLoadedGame();
             }
         }
