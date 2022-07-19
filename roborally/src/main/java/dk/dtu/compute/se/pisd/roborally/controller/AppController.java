@@ -42,8 +42,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Controls the application before the game is started
-
+ * Controls the application before the game is started.
  */
 public class AppController implements Observer {
     final private List<Integer> PLAYER_NUMBER_OPTIONS = Arrays.asList(2, 3, 4, 5, 6);
@@ -58,7 +57,7 @@ public class AppController implements Observer {
     }
 
     /**
-     * Used by the new game menu option to start a new game
+     * Used by the new game menu option to start a new game.
      */
     public void newGame() {
         Optional<Integer> numPlayers = AppController.ChooseNumberOfPlayers(PLAYER_NUMBER_OPTIONS);
@@ -70,8 +69,11 @@ public class AppController implements Observer {
     }
 
 
-     // Creates a new game and shows the game
-
+    /**
+     * Creates a new game and shows the game
+     * @param numPlayers Number of players.
+     * @param prevFailed
+     */
     private void createNewGame(int numPlayers, boolean prevFailed) {
         //Optional<String> chosenBoard = askUserWhichDefaultBoard(prevFailed);
 
@@ -88,7 +90,11 @@ public class AppController implements Observer {
         }
     }
 
-    //allows players to write a text dialog
+    /**
+     * Allows players to write a text dialog.
+     * @param input Input from player in an array.
+     * @return Returns null.
+     */
     public static String getInput_text(String[] input) {
         TextInputDialog serverCreation = new TextInputDialog();
         serverCreation.setTitle(input[0]);
@@ -99,7 +105,13 @@ public class AppController implements Observer {
         return null;
     }
 
-    //ask users for number of players in a dialog box
+    //
+
+    /**
+     * Asks users for number of players in a dialog box.
+     * @param list List of different amounts.
+     * @return Returns dialog and waits for input.
+     */
     public static Optional<Integer> ChooseNumberOfPlayers(List<Integer> list) {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(list.get(0), list);
         dialog.setTitle("Player number");
@@ -108,8 +120,13 @@ public class AppController implements Observer {
         return dialog.showAndWait();
     }
 
+    //
 
-    // ask players to choose a game board
+    /**
+     * Asks players to choose a game board.
+     * @param list List of saved boards.
+     * @return Returns dialog and waits for input.
+     */
     public static Optional<String> ChooseBoardName(List<String> list) {
         ChoiceDialog<String> dialog = new ChoiceDialog<>(list.get(0), list);
         dialog.setTitle("CHOOSE BOARD");
@@ -118,7 +135,11 @@ public class AppController implements Observer {
         return dialog.showAndWait();
     }
 
-    // give a warning
+    /**
+     * Gives a warning.
+     * @param input A string to be shown as a warning
+     * @return Returns and waits.
+     */
     public static Optional<ButtonType> warningCase(String[] input) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(input[0]);
@@ -126,7 +147,9 @@ public class AppController implements Observer {
         return alert.showAndWait();
     }
 
-    // Save game Stage and let a player write a name and  save a game
+    /**
+     * Save game Stage and let a player write a name and  save a game
+     */
     public void saveGame() {
             String[] s = new String[]{"SAVE YOUR GAME", "Write a name and save your game"};
             String dialog = AppController.getInput_text(s);
@@ -135,7 +158,11 @@ public class AppController implements Observer {
                 SaveAndLoad.SaveBoardGame(gameController.board, dialog);
         }
 
-    // player can load a game
+    //
+
+    /**
+     * Player can load a game
+     */
     private void createLoadedGame() {
         Optional<String> chosenBoard = AppController.ChooseBoardName(IOUtil.getSavedBoardsName());
 
@@ -159,7 +186,11 @@ public class AppController implements Observer {
         }
     }
 
-     // start a new game and shows the Gui. setup game controller Uses board to create the game
+
+    /**
+     * Start a new game and shows the Gui and set up game controller.
+     * @param board Selected board to be used.
+     */
     private void setupGameController(Board board) {
         gameController = new GameController(this, Objects.requireNonNull(board), serverClientMode ? client : null);
         board.setCurrentPlayer(board.getPlayer(0));
@@ -178,9 +209,9 @@ public class AppController implements Observer {
         return false;
     }
 
-
-     //Shows a window and ask player to exit the game or not.
-
+    /**
+     * Shows a window and ask player to exit the game or not
+     */
     public void exitGame() {
         if (gameController != null) {
             String[] s = new String[]{"Exit RoboRally?", "Are you sure you want to exit RoboRally?"};
@@ -199,30 +230,34 @@ public class AppController implements Observer {
         }
     }
 
-
-    //player Disconnects from the server
+    /**
+     * Player disconnects from the server
+     */
     public void Client_Disconnect_Server() {
         client.leaveGame();
     }
 
-
-    //return true if game is running
+    /**
+     * Checks if the game is running or not
+     * @return Returns true if game is running.
+     */
     public boolean isGameRunning() {
         return gameController != null;
     }
 
-
     @Override
     public void update(Subject subject) {
-        // XXX do nothing for now
+
     }
 
     public RoboRally getRoboRally() {
         return roboRally;
     }
 
-
-    // Make a Hosts game on the server and starts the game
+    /**
+     * Hosts game on the server and starts the game
+     * @param errorMessage the relevant message
+     */
     public void ClientHostGame(String... errorMessage) {
         String[] box = new String[]{"Multiplayer game ", "Write your server Name:"};
         if (errorMessage.length != 0)
@@ -239,8 +274,10 @@ public class AppController implements Observer {
         }
     }
 
-
-    // Player chooses an ID from server table and joins the game
+    /**
+     * Player chooses a server from server table and joins the game
+     * @param id the chosen server's ID
+     */
     public void ClientJoinGame(String id) {
         String message = client.joinGame(id);
         if (message.equals("ok")) {
@@ -253,7 +290,9 @@ public class AppController implements Observer {
         AppController.warningCase(new String[]{"Error", message, "refresh and try again"});
     }
 
-    // player can see the available servers on the server table
+    /**
+     * Player can see the available servers on the server table
+     */
     public void Client_ConnectToServer() {
         String serverList = client.listGames(); //gets the list of servers in the table
         if (serverList.equals("server timeout")) { //Give a massage to player if server is not reachable

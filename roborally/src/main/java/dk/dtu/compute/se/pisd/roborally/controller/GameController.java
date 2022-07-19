@@ -37,8 +37,9 @@ import java.util.*;
 import static dk.dtu.compute.se.pisd.roborally.model.Command.AGAIN;
 
 
-// all the game logic for RoboRally
-
+/**
+ * All the game logic for RoboRally.
+ */
 public class GameController {
 
     public Board board;
@@ -50,7 +51,9 @@ public class GameController {
     private int playerNumber;
 
 
-
+    /**
+     * Made as constructor.
+     */
     public GameController(AppController appController, @NotNull Board board, Client client) {
         this.appController = appController;
         this.board = board;
@@ -67,8 +70,11 @@ public class GameController {
 
     }
 
-     //Start the programming phase and clear all registers
 
+
+    /**
+     * Start the programming phase and clear all registers
+     */
     public void startProgrammingPhase() {
         // All this should be done for the first reload for a newly constructed board
         boolean isNewlyLoadedDefaultBoard = SaveAndLoad.getNewBoardCreated();
@@ -108,7 +114,10 @@ public class GameController {
         }
     }
 
-    // Random Command cards
+    /**
+     * Generate random command card
+     * @return return the generated card.
+     */
     public CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
         ArrayList<Command> commandList = new ArrayList<>(Arrays.asList(commands).subList(0, 9));
@@ -116,9 +125,9 @@ public class GameController {
         return new CommandCard(commandList.get(random));
     }
 
-
-     //Changes the phase from programming to activation.
-
+    /**
+     * Changes the phase from programming to activation.
+     */
     public void finishProgrammingPhase() {
         if (board.getPlayerNumber(board.getCurrentPlayer()) == board.getPlayers().size() - 1 ||
                 client == null) {
@@ -141,7 +150,9 @@ public class GameController {
         }
     }
 
-
+    /**
+     * @param register A card register to make visible.
+     */
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {
             for (int i = 0; i < board.getPlayersNumber(); i++) {
@@ -152,9 +163,9 @@ public class GameController {
         }
     }
 
-
-     //Show all players programming fields
-
+    /**
+     * Show all players programming fields
+     */
     private void makeProgramFieldsInvisible() {
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
@@ -165,24 +176,26 @@ public class GameController {
         }
     }
 
-
-     // Execute programs and change phase
-
+    /**
+     * Execute programs and change phase
+     */
     public void executePrograms() {
         board.setStepMode(false);
         continuePrograms();
     }
 
-
-     // Execute steps and continue game
-
+    /**
+     * Execute steps and continue game
+     */
     public void executeStep() {
         board.setStepMode(true);
         continuePrograms();
     }
 
-
-     // execute the given command before player change and the change player
+    /**
+     * Execute command before player change.
+     * @param command Command to be executed.
+     */
     public void execute_Command_Activation(Command command) {
         board.setPhase(Phase.ACTIVATION);
 
@@ -191,13 +204,12 @@ public class GameController {
         changePlayer(currentPlayer, board.getStep());
     }
 
-
-     //create a new board view when board is changed
-
+    /**
+     * Create a new board view when board is changed
+     */
     public void updateBoard() {
         appController.getRoboRally().createBoardView(this);
     }
-
 
     private void continuePrograms() {
         do {
@@ -205,9 +217,9 @@ public class GameController {
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
     }
 
-
-     // Executes the next step in the players programming felt
-
+    /**
+     * Executes the next step in the players programming felt
+     */
     protected void executeNextStep() {
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
@@ -231,9 +243,9 @@ public class GameController {
         }
     }
 
-
-     //Ends the current game and close the game
-
+    /**
+     * Ends the current game and close the game
+     */
     public void endGame() {
         Platform.runLater(appController::Client_Disconnect_Server);
         Platform.runLater(appController::stopGame);
@@ -276,9 +288,11 @@ public class GameController {
         }
     }
 
-
-     // Change the player and the step of the board
-
+    /**
+     * Change the player and the step of the board
+     * @param currentPlayer from current player to next player
+     * @param step
+     */
     private void changePlayer(Player currentPlayer, int step) {
         int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
         if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -297,6 +311,11 @@ public class GameController {
         pushGameState();
         refreshUpdater();
     }
+
+    /**
+     * Move current player to a certain space.
+     * @param space Space to be moved to.
+     */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
         if (space.board == board) {
             Player currentPlayer = board.getCurrentPlayer();
@@ -314,9 +333,11 @@ public class GameController {
         }
     }
 
-
-     // Takes a command from a command card and the player which is executing that given command
-
+    /**
+     * A player executing a command.
+     * @param player The player executing the command.
+     * @param command the command to be executed.
+     */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
@@ -343,8 +364,12 @@ public class GameController {
         }
     }
 
-     //Move one card from the command felt to the programming felt
-
+    /**
+     * Moves one command card to a different field.
+     * @param source The command card field the card is taken from.
+     * @param target The command card field the card is taken to.
+     * @return Conformation whether valid or not.
+     */
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
         CommandCard targetCard = target.getCard();
@@ -357,7 +382,11 @@ public class GameController {
         }
     }
 
-    // Control robot moves, robot move forward
+    /**
+     * Moves player's robot an amount spaces forward.
+     * @param player Player/robot to be moved.
+     * @param moves Number of moves.
+     */
     public void moveForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
             try {
@@ -380,27 +409,41 @@ public class GameController {
         }
     }
 
-    // Control robot moves, robot turn Right
+    /**
+     * Turns player's robot 90 degrees right.
+     * @param player Player turning.
+     */
     public void turnRight(@NotNull Player player) {
         if (player.board == board) {
             player.setHeading(player.getHeading().next());
         }
     }
 
-    // Control robot moves, robot turn left
+    /**
+     * Turns player's robot degrees left.
+     * @param player Player turning.
+     */
     public void turnLeft(@NotNull Player player) {
         if (player.board == board) {
             player.setHeading(player.getHeading().prev());
         }
     }
 
-    // Control robot moves, robot turn U
+    /**
+     * Turns player's robot 180 degrees.
+     * @param player Player turning.
+     */
     public void uTurn(Player player) {
         turnLeft(player);
         turnLeft(player);
     }
 
     // Control robot moves, robot move one step back
+
+    /**
+     * Moves player backwards.
+     * @param player Player to be moved.
+     */
     public void moveBackward(Player player) {
         uTurn(player);
         moveForward(player, 1);
@@ -408,6 +451,12 @@ public class GameController {
     }
 
     // Control robot moves, robot Movie again
+
+    /**
+     *
+     * @param player
+     * @param step
+     */
     public void again(Player player, int step) {
         if (step < 1) return;
         Command prevCommand = player.getProgramField(step - 1).getCard().command;
@@ -420,18 +469,24 @@ public class GameController {
         }
     }
 
+    /**
+     * Checks if a space is occupied by a player.
+     * @param space Space to check.
+     */
     private boolean isOccupied(Space space) {
         Space target = board.getSpace(space.x, space.y);
         return target.getPlayer() != null;
     }
-
 
     public void recreatePlayersView() {
         BoardView boardView = appController.getRoboRally().getBoardView();
         boardView.updatePlayersView();
     }
 
-    //control robot activation on the board
+
+    /**
+     * Controls robot activation on the board
+     */
     private void Activation_on_Board() {
         List<Player> players = board.getPlayers();
         ArrayDeque<Player> actionsToBeHandled = new ArrayDeque<>(board.getPlayersNumber());
@@ -502,32 +557,32 @@ public class GameController {
         }
     }
 
-    //this method update the board when a not active player are polling and
-    //and players taking their turn are not pulling.
-
-        public void refreshUpdater() {
-            if (client != null) {
-                updater.setUpdate(isMyTurn());
-
-                if (board.gameOver) endGame(); // Needed to ensure it closes
-            }
-
-            if (board.gameOver)
+    /**
+     * Updates the board when a non-active player are pulling
+     * and players taking their turn are not pulling.
+     */
+    public void refreshUpdater() {
+        if (client != null) {
+            updater.setUpdate(isMyTurn());
+            if (board.gameOver) endGame(); // Needed to ensure it closes
+        }
+        if (board.gameOver)
                 updater.setUpdate(false);
         }
 
-
-     // Pushes the current game state to the connected server id
-
+    /**
+     * Pushes the current game state to the connected server id
+     */
     public void pushGameState() {
         if (client != null)
             client.updateGame(SerializeState.serializeGame(board));
     }
 
-
-      //Checks if a player connected to an online game has his/hers turn
-     // this is determined by their id given from the server
-
+    /**
+     * Checks if a player is connected to an online game has his/hers turn.
+     * This is determined by their id given from the server
+     * @return
+     */
     public boolean isMyTurn() {
         return board.getCurrentPlayer() != board.getPlayer(playerNumber) && client != null;
 
@@ -537,15 +592,22 @@ public class GameController {
         playerNumber= number;
     }
 
+
     public int getPlayerNumber() {
         return playerNumber;
     }
+
 
     private void removeSpamCard(Player player) {
         player.getDmgcards().remove(Command.SPAM);
     }
 
-    // the winner get a massage when player got all the checkpoints on the board
+    //
+
+    /**
+     * The winner gets a massage when a player got all the checkpoints on the board in the correct order.
+     * @param space
+     */
     public void Winner_Massage(Space space){
         Alert winMsg = new Alert(Alert.AlertType.INFORMATION);
         winMsg.setTitle("Game Ended");

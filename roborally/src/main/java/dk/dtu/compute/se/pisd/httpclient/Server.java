@@ -1,8 +1,8 @@
 package dk.dtu.compute.se.pisd.httpclient;
 
-
- //This class uses for Json to determine how the string from the server is declared.
-
+/**
+ * This class uses for Json to determine how the string from the server is declared.
+ */
 public class Server {
 
     private String id;

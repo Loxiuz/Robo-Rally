@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-
- //Create a http client that can interact with the RoboRally game server
-
+/**
+ * Create a http client that can interact with the RoboRally game server.
+ */
 public class Client implements Client_interface {
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(10)).build();
@@ -32,8 +32,10 @@ public class Client implements Client_interface {
         return connectedToServer;
     }
 
-
-    // Uses Json and update the game state on the server and server can store this state
+    /**
+     * Uses Json and update the game state on the server and server can store this state.
+     * @param gameState The state to be stored.
+     */
     @Override
     public void updateGame(String gameState) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -53,8 +55,10 @@ public class Client implements Client_interface {
     }
 
 
-     // Gets the current game state from Json and deserialized
-
+    /**
+     * Gets the current game state from Json and deserialized.
+     * @return Returns the response.
+     */
     @Override
     public String getGameState() {
         HttpRequest request = HttpRequest.newBuilder()
@@ -75,9 +79,11 @@ public class Client implements Client_interface {
         return result;
     }
 
-
-     //Hosts a new game on the server and sets the server id
-
+    /**
+     * Hosts a new game on the server and sets the server id.
+     * @param title Title of the game to be hosted.
+     * @return Returns "success" if running correctly.
+     */
     @Override
     public String hostGame(String title) {
         if (!Objects.equals(serverID, ""))
@@ -105,9 +111,11 @@ public class Client implements Client_interface {
     }
 
 
-     //Lists all games available on the server
     // list data in the server's table
-
+    /**
+     * Lists all games available on the server.
+     * @return Returns response.
+     */
     @Override
     public String listGames() {
         HttpRequest request = HttpRequest.newBuilder()
@@ -129,8 +137,13 @@ public class Client implements Client_interface {
     }
 
 
-     // select an id and joins a game and get the current game state
+     //
 
+    /**
+     * Select an id and joins a game and get the current game state
+     * @param serverToJoin An ID of a server.
+     * @return Returns "ok" as confirmation.
+     */
     @Override
     public String joinGame(String serverToJoin) {
         if (!Objects.equals(serverToJoin, ""))
@@ -157,8 +170,10 @@ public class Client implements Client_interface {
     }
 
 
-     //  leave our current game from server
 
+    /**
+     * leave our current game from server.
+     */
     @Override
     public void leaveGame() {
         if (Objects.equals(serverID, ""))

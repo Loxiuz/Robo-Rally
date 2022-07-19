@@ -1,8 +1,11 @@
 package dk.dtu.compute.se.pisd.httpclient;
 
 
- //This interface has some methods which we use them on both client and server .
+ //
 
+/**
+ * This interface has some methods which is used on both client and server.
+ */
 public interface Client_interface {
 
     void updateGame(String gameState);

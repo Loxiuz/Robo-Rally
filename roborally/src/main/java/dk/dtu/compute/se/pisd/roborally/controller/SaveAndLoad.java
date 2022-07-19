@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
- // Saving and Loading games of Roborally
-
+/**
+ * Saving and Loading games of Roborally
+ */
 public class SaveAndLoad {
 
     final static private List<String> PLAYERCOLORS = Arrays.asList("red", "green", "blue", "orange", "grey", "magenta");
@@ -27,6 +27,12 @@ public class SaveAndLoad {
 
 
     // Get the players board and it's data and seves the game in a file
+
+    /**
+     * Saves a game to Json.
+     * @param board
+     * @param name
+     */
     public static void SaveBoardGame(Board board, String name) {
 
         // Setting up the board template
@@ -37,7 +43,14 @@ public class SaveAndLoad {
     }
 
 
-    // player can load a board game
+    //
+
+    /**
+     * Loads a game from Json.
+     * @param name Filename of the board/game
+     * @return Returns the loaded game
+     * @throws BoardNotFoundException In case the board name does not exist.
+     */
     public static Board loadBoardGame(String name) throws BoardNotFoundException {
         String resourcePath = SAVEDBOARDS + "/" + name + "." + JSONFile;
         String json = IOUtil.readGameJson(resourcePath);
@@ -46,7 +59,13 @@ public class SaveAndLoad {
 
     }
 
-
+    /**
+     * Creates a new board.
+     * @param numPlayers Number of players in the game.
+     * @param boardName Name of the board.
+     * @return Returns the created board
+     * @throws BoardNotFoundException
+     */
     public static Board newBoard(int numPlayers, String boardName) throws BoardNotFoundException {
         NewBoard = true;
 
@@ -74,6 +93,11 @@ public class SaveAndLoad {
         return NewBoard;
     }
 
+    /**
+     * Places the players at possible positions
+     * @param players List of players to be places
+     * @param possibleSpaces List of the possible spaces.
+     */
     private static void PlayersPlace(List<Player> players, List<Space> possibleSpaces) {
 
         for (Player currentPlayer : players) {
@@ -87,6 +111,13 @@ public class SaveAndLoad {
     }
 
     // all spaces on the board get a Field action
+
+    /**
+     *
+     * @param board
+     * @param action
+     * @return
+     */
     private static List<Space> getSpacesFieldAction(Board board, FieldAction action) {
         List<Space> spaces = new ArrayList<>();
 
