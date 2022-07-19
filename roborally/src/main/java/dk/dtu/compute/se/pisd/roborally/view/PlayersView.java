@@ -46,7 +46,7 @@ public class PlayersView extends TabPane implements ViewObserver {
         createPlayersView();
     }
 
-    //copy
+
     public void createPlayersView() {
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 

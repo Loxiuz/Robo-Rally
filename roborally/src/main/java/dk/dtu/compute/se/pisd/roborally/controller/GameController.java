@@ -24,7 +24,7 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.httpclient.Client;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.*;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.Checkpoint;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.BoardView;
 import javafx.application.Platform;
@@ -54,7 +54,7 @@ public class GameController {
         this.client = client;
 
         if (client != null) {
-            client.updateGame(SerializeState.serializeGame(board));
+            client.updateGame(SerializeAndDeserialize.serialize(board));
             playerNumber = client.getRobotNumber();
             updater = new UpdateServerBoard();
             updater.setGameController(this);
@@ -336,7 +336,7 @@ public class GameController {
 
             }
             if (client != null)
-                client.updateGame(SerializeState.serializeGame(board));
+                client.updateGame(SerializeAndDeserialize.serialize(board));
         }
     }
 
@@ -452,7 +452,7 @@ public class GameController {
 
     public void pushGameState() {
         if (client != null)
-            client.updateGame(SerializeState.serializeGame(board));
+            client.updateGame(SerializeAndDeserialize.serialize(board));
     }
 
 

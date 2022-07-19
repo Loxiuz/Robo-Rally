@@ -4,7 +4,7 @@ import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.StartGear;
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.IOUtil;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
@@ -30,7 +30,7 @@ public class SaveAndLoad {
     public static void SaveBoardGame(Board board, String name) {
 
         // Setting up the board template
-        String json = SerializeState.serializeGame(board);
+        String json = SerializeAndDeserialize.serialize(board);
 
         IOUtil.writeGameJson(name, json);
 
@@ -42,7 +42,7 @@ public class SaveAndLoad {
         String resourcePath = SAVEDBOARDS + "/" + name + "." + JSONFile;
         String json = IOUtil.readGameJson(resourcePath);
 
-        return SerializeState.deserializeGame(json, true);
+        return SerializeAndDeserialize.deserialize(json, true);
 
     }
 
@@ -54,7 +54,7 @@ public class SaveAndLoad {
         String resourcePath = BOARDS + "/" + boardName + "." + JSONFile;
         String json = IOUtil.readGameJson(resourcePath);
 
-        Board board = SerializeState.deserializeGame(json, false);
+        Board board = SerializeAndDeserialize.deserialize(json, false);
 
         // Create the players and place them
         for (int i = 0; i < numPlayers; i++) {

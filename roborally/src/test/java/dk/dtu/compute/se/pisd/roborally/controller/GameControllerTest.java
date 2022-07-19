@@ -90,7 +90,7 @@ class GameControllerTest {
 
 
     @Test
-    void testCheckPointsInCorrectOrder() {
+    void testCheckPoints() {
         Board board = null;
         try {
             board = SaveAndLoad.newBoard(2, "SprintCramp");

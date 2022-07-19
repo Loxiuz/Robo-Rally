@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 //
-// Do a specific path in resources folder , read and write serialized boards from the file
+// Do a specific path in resources folder , read and write serialized boards from the json file
 public class IOUtil {
     private static final String SaveGames = "SaveGames";
     private static final String GameBoardsJson = "GameBoardsJson";
@@ -24,13 +24,13 @@ public class IOUtil {
 
 
     // this methode uses for saving boards in Json
-    public static void writeGameJson(String saveName, String json) {
+    public static void writeGameJson(String saveJsonName, String json) {
         // Saving the board template using GSON
         //class loader has responsible for loading classes.
         ClassLoader classLoader = IOUtil.class.getClassLoader();
 
-        String filename = Objects.requireNonNull(classLoader.getResource(SaveGames)).getPath() + "/"
-                + saveName + "." + JsonFile;
+        String jsonName = Objects.requireNonNull(classLoader.getResource(SaveGames)).getPath() + "/"
+                + saveJsonName + "." + JsonFile;
 
         GsonBuilder jsonBuilder = new GsonBuilder().
                 registerTypeAdapter(FieldAction.class, new Adapter<FieldAction>()).
@@ -39,9 +39,9 @@ public class IOUtil {
 
         FileWriter fileWriter = null;
         JsonWriter jsonwriter = null;
-        filename = filename.replaceAll("%20", " ");
+        jsonName = jsonName.replaceAll("%20", " ");
         try {
-            fileWriter = new FileWriter(filename);
+            fileWriter = new FileWriter(jsonName);
             jsonwriter = gson.newJsonWriter(fileWriter);
 
             jsonwriter.jsonValue(json);
@@ -82,10 +82,10 @@ public class IOUtil {
 
     // this methode gets the name of saved boards form resources folder
     public static List<String> getSavedBoardsName() {
-        File[] listOfFiles = getFilesInFolder(SaveGames);
+        File[] Files_list = getFilesInFolder(SaveGames);
         List<String> fileNames = new ArrayList<>();
 
-        for (File file : listOfFiles) {
+        for (File file : Files_list) {
             fileNames.add(file.getName().replace(".json", ""));
         }
 
@@ -95,10 +95,10 @@ public class IOUtil {
 
     // this method gets name of default boards form resources folder
     public static List<String> getBoardGameName() {
-        File[] listOfFiles = getFilesInFolder(GameBoardsJson);
+        File[] Files_list = getFilesInFolder(GameBoardsJson);
         List<String> fileNames = new ArrayList<>();
 
-        for (File file : listOfFiles) {
+        for (File file : Files_list) {
             fileNames.add(file.getName().replace(".json", ""));
         }
 
@@ -109,12 +109,12 @@ public class IOUtil {
     // get files in the resource folder
     private static File[] getFilesInFolder(String folderName) {
         ClassLoader classLoader = IOUtil.class.getClassLoader();
-        String fullPath = Objects.requireNonNull(classLoader.getResource(folderName)).getPath();
+        String Path = Objects.requireNonNull(classLoader.getResource(folderName)).getPath();
 
 
-        fullPath = fullPath.replace("%20", " ");
+        Path = Path.replace("%20", " ");
 
-        File folder = new File(fullPath);
+        File folder = new File(Path);
 
         return folder.listFiles();
     }

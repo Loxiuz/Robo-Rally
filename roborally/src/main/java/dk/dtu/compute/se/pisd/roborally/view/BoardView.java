@@ -121,7 +121,7 @@ public class BoardView extends VBox implements ViewObserver {
         }
 
     }
-    //copy
+
     public void updatePlayersView() {
         removeChildren();
         playersView = new PlayersView(gameController);

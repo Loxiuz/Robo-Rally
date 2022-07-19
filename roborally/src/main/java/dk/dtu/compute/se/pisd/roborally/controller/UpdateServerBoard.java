@@ -1,7 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.httpclient.Client;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import javafx.application.Platform;
 
 
@@ -30,7 +30,7 @@ public class UpdateServerBoard extends Thread {
 
     public void updateBoarOnServer() {
         if (!gameController.board.gameOver) {
-            gameController.board = SerializeState.deserializeGame(client.getGameState(), true);
+            gameController.board = SerializeAndDeserialize.deserialize(client.getGameState(), true);
             Platform.runLater(gameController::updateBoard);
         }
     }
