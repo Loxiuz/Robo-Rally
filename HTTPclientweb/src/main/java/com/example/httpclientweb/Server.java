@@ -4,16 +4,16 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Server {
-    private transient String gameState;
+    private transient String GameSituation;
     private int numberOfPlayers;
     private int PlayersOnBoard;
     private transient boolean[] playerSpotFilled;
-    private final String id;
-    private  String title;
+    private final String GameId;
+    private  String ServerName;
 
     public Server(String title, int id) {
-        this.title=String.valueOf(title);
-        this.id = String.valueOf(id);
+        this.ServerName=String.valueOf(title);
+        this.GameId = String.valueOf(id);
         this.numberOfPlayers = 1;
     }
 
@@ -33,19 +33,19 @@ public class Server {
         return numberOfPlayers;
     }
 
-    public String getGameState() {
-        return gameState;
+    public String getGameSituation() {
+        return GameSituation;
     }
 
-    public void setGameState(String gameState) {
-        this.gameState = gameState;
+    public void setGameSituation(String gameState) {
+        this.GameSituation = gameState;
     }
 
-    public String getId() {
-        return id;
+    public String getGameId() {
+        return GameId;
     }
-    public String getTitle() {
-        return title;
+    public String getServerName() {
+        return ServerName;
     }
 
     public int getPlayersOnBoard() {
@@ -77,13 +77,13 @@ public class Server {
         if (o == null || getClass() != o.getClass()) return false;
         Server server = (Server) o;
         return numberOfPlayers == server.numberOfPlayers && PlayersOnBoard == server.PlayersOnBoard &&
-                id.equals(server.id) && title.equals(server.title) && gameState.equals(server.gameState) &&
+                GameId.equals(server.GameId) && ServerName.equals(server.ServerName) && GameSituation.equals(server.GameSituation) &&
                 Arrays.equals(playerSpotFilled, server.playerSpotFilled);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, title, gameState, numberOfPlayers, PlayersOnBoard);
+        int result = Objects.hash(GameId, GameSituation, GameSituation, numberOfPlayers, PlayersOnBoard);
         result = 31 * result + Arrays.hashCode(playerSpotFilled);
         return result;
     }
@@ -91,9 +91,9 @@ public class Server {
     @Override
     public String toString() {
         return "Server{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", gameState='" + gameState + '\'' +
+                "id='" + GameId + '\'' +
+                ", title='" + ServerName + '\'' +
+                ", gameState='" + GameSituation + '\'' +
                 ", numberOfPlayers=" + numberOfPlayers +
                 ", PlayersOnBoard=" + PlayersOnBoard +
                 ", playerSpotFilled=" + Arrays.toString(playerSpotFilled) +

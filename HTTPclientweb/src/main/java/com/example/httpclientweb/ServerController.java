@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 public class ServerController {
 
     @Autowired
-    private ClientWebInterface webStatus;
+    private ClientWebInterface webSituation;
 
 
     @PostMapping(value = "/game")
     public ResponseEntity<String> createGame(@RequestBody String s) {
-        String newServerID = webStatus.hostGame(s);
+        String newServerID = webSituation.hostServerGame(s);
         if (newServerID == null) //something went wrong
             return ResponseEntity.internalServerError().body("Server couldn't start");
         return ResponseEntity.ok().body(newServerID);
@@ -23,14 +23,14 @@ public class ServerController {
 
 
     @GetMapping(value = "/game")
-    public ResponseEntity<String> listOfGame() {
-        return ResponseEntity.ok().body(webStatus.listOfGames());
+    public ResponseEntity<String> listOfServerGame() {
+        return ResponseEntity.ok().body(webSituation.listOfServerGames());
     }
 
 
     @PutMapping(value = "/game/{id}")
-    public ResponseEntity<String> joinGame(@PathVariable String id) {
-        String response = webStatus.joinToGame(id);
+    public ResponseEntity<String> joinToAGame(@PathVariable String id) {
+        String response = webSituation.joinToGame(id);
         if (response.equals("Server doesn't exist"))
             return ResponseEntity.status(404).body(response);
         if (response.equals("Server is full"))
@@ -41,19 +41,19 @@ public class ServerController {
 
     @PostMapping(value = "/game/{id}/{robot}")
     public void leaveGame(@PathVariable String id, @PathVariable String robot) {
-        webStatus.leaveTheGame(id, Integer.parseInt(robot));
+        webSituation.leaveTheGame(id, Integer.parseInt(robot));
     }
 
 
     @GetMapping(value = "/gameState/{id}")
-    public ResponseEntity<String> getGameState(@PathVariable String id) {
-        return ResponseEntity.ok().body(webStatus.getGameState(id));
+    public ResponseEntity<String> getGameSituation(@PathVariable String id) {
+        return ResponseEntity.ok().body(webSituation.getGameSituation(id));
     }
 
 
     @PutMapping(value = "/gameState/{id}")
-    public ResponseEntity<String> setGameState(@PathVariable String id, @RequestBody String game) {
-        webStatus.updateGame(id, game);
+    public ResponseEntity<String> setGameSituation(@PathVariable String id, @RequestBody String game) {
+        webSituation.updateGame(id, game);
         return ResponseEntity.ok().body("ok");
     }
 }

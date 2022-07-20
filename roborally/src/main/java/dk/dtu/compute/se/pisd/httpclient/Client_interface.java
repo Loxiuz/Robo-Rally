@@ -5,12 +5,11 @@ package dk.dtu.compute.se.pisd.httpclient;
 
 public interface Client_interface {
 
-    void updateGame(String gameState);
-    String joinGame(String serverToJoin);
+    String hostServerGame(String title);
+    String listServerGames();
+    String joinToAGame(String serverToJoin);
 
-    String hostGame(String title);
-    String listGames();
-
-    String getGameState();
-    void leaveGame();
+    String getGameSituation();
+    void updateServerGame(String gameState);
+    void leaveTheGame();
 }

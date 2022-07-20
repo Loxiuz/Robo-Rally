@@ -81,7 +81,7 @@ public class AppController implements Observer {
                 Board board = SaveAndLoad.newBoard(numPlayers, chosenBoard.get());
                 setupGameController(board);
                 if (client.isConnectedToServer())
-                    client.updateGame(SerializeAndDeserialize.serialize(board));
+                    client.updateServerGame(SerializeAndDeserialize.serialize(board));
             } catch (BoardDoesNotExistException e) {
                 createNewGame(numPlayers, true);
             }
@@ -89,11 +89,11 @@ public class AppController implements Observer {
     }
 
     //allows players to write a text dialog
-    public static String getInput_text(String[] input) {
-        TextInputDialog serverCreation = new TextInputDialog();
-        serverCreation.setTitle(input[0]);
-        serverCreation.setHeaderText(input[1]);
-        Optional<String> choise = serverCreation.showAndWait();
+    public static String getInput_ServerDialog(String[] input) {
+        TextInputDialog ServerDialog = new TextInputDialog();
+        ServerDialog.setTitle(input[0]);
+        ServerDialog.setHeaderText(input[1]);
+        Optional<String> choise = ServerDialog.showAndWait();
         if (!choise.isEmpty())
             return choise.get();
         return null;
@@ -129,7 +129,7 @@ public class AppController implements Observer {
     // Save game Stage and let a player write a name and  save a game
     public void saveGame() {
             String[] s = new String[]{"SAVE YOUR GAME", "Write a name and save your game"};
-            String dialog = AppController.getInput_text(s);
+            String dialog = AppController.getInput_ServerDialog(s);
 
             if (dialog != null)
                 SaveAndLoad.SaveBoardGame(gameController.board, dialog);
@@ -194,7 +194,7 @@ public class AppController implements Observer {
         // If the user did not cancel, the RoboRally application will exit
         // after the option to save the game
         if (gameController == null || stopGame()) {
-            client.leaveGame();
+            client.leaveTheGame();
             Platform.exit();
         }
     }
@@ -202,7 +202,7 @@ public class AppController implements Observer {
 
     //player Disconnects from the server
     public void Client_Disconnect_Server() {
-        client.leaveGame();
+        client.leaveTheGame();
     }
 
 
@@ -224,13 +224,13 @@ public class AppController implements Observer {
 
     // Make a Hosts game on the server and starts the game
     public void ClientHostGame(String... errorMessage) {
-        String[] box = new String[]{"Multiplayer game ", "Write your server Name:"};
+        String[] HostGameDialog = new String[]{"Multiplayer game ", "Write your server Name:"};
         if (errorMessage.length != 0)
-            box[1] = errorMessage[0] + "\n Try again";
-        String result = AppController.getInput_text(box);
+            HostGameDialog[1] = errorMessage[0] + "\n Try again";
+        String result = AppController.getInput_ServerDialog(HostGameDialog);
         if (result == null)
             return;
-        String response = client.hostGame(result);
+        String response = client.hostServerGame(result);
         if (!Objects.equals(response, "success"))
             ClientHostGame(response);
         else {
@@ -242,20 +242,20 @@ public class AppController implements Observer {
 
     // Player chooses an ID from server table and joins the game
     public void ClientJoinGame(String id) {
-        String message = client.joinGame(id);
-        if (message.equals("ok")) {
+        String ResponseMessage = client.joinToAGame(id);
+        if (ResponseMessage.equals("ok")) {
             serverClientMode = true;
-            Board board = SerializeAndDeserialize.deserialize(client.getGameState(), true);
+            Board board = SerializeAndDeserialize.deserialize(client.getGameSituation(), true);
             setupGameController(board);
             gameController.setPlayerNumber(client.getRobotNumber());
 
         } else
-        AppController.warningCase(new String[]{"Error", message, "refresh and try again"});
+        AppController.warningCase(new String[]{"Error", ResponseMessage, "refresh the Server and try again"});
     }
 
     // player can see the available servers on the server table
     public void Client_ConnectToServer() {
-        String serverList = client.listGames(); //gets the list of servers in the table
+        String serverList = client.listServerGames(); //gets the list of servers in the table
         if (serverList.equals("server timeout")) { //Give a massage to player if server is not reachable
             AppController.warningCase(new String[]{"error", serverList, "try again"});
             return;

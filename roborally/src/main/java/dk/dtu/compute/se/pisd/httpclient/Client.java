@@ -35,9 +35,9 @@ public class Client implements Client_interface {
 
     // Uses Json and update the game state on the server and server can store this state
     @Override
-    public void updateGame(String gameState) {
+    public void updateServerGame(String gameSituation) {
         HttpRequest request = HttpRequest.newBuilder()
-                .PUT(HttpRequest.BodyPublishers.ofString(gameState))   //Http .put
+                .PUT(HttpRequest.BodyPublishers.ofString(gameSituation))   //Http .put
                 .uri(URI.create(server + "/gameState/" + serverID))
                 .setHeader("User-Agent", "RoboRally Client")
                 .setHeader("Content-Type", "application/json")
@@ -56,10 +56,10 @@ public class Client implements Client_interface {
      // Gets the current game state from Json and deserialized
 
     @Override
-    public String getGameState() {
+    public String getGameSituation() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()                                               // http .Get request for game state
-                .uri(URI.create(server + "/gameState/" + serverID))
+                .uri(URI.create(server + "/gameSituation/" + serverID))
                 .setHeader("User-Agent", "RoboRally Client")
                 .header("Content-Type", "application/json")
                 .build();
@@ -79,11 +79,11 @@ public class Client implements Client_interface {
      //Hosts a new game on the server and sets the server id
 
     @Override
-    public String hostGame(String title) {
+    public String hostServerGame(String ServerName) {
         if (!Objects.equals(serverID, ""))
-            leaveGame();
+            leaveTheGame();
         HttpRequest request = HttpRequest.newBuilder()
-                .POST(HttpRequest.BodyPublishers.ofString(title))
+                .POST(HttpRequest.BodyPublishers.ofString(ServerName))
                 .uri(URI.create(server + "/game"))
                 .setHeader("User-Agent", "RoboRally Client")
                 .header("Content-Type", "text/plain")
@@ -109,7 +109,7 @@ public class Client implements Client_interface {
     // list data in the server's table
 
     @Override
-    public String listGames() {
+    public String listServerGames() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(server + "/game"))
@@ -132,23 +132,24 @@ public class Client implements Client_interface {
      // select an id and joins a game and get the current game state
 
     @Override
-    public String joinGame(String serverToJoin) {
-        if (!Objects.equals(serverToJoin, ""))
-            leaveGame();
+    public String joinToAGame(String JoinToserverGame) {
+        if (!Objects.equals(JoinToserverGame, ""))
+            leaveTheGame();
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(""))
-                .uri(URI.create(server + "/game/" + serverToJoin))
+                .uri(URI.create(server + "//game/" + JoinToserverGame))
                 .header("User-Agent", "RoboRally Client")
                 .header("Content-Type", "text/plain")
                 .build();
+
         CompletableFuture<HttpResponse<String>> response =
                 HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
-            HttpResponse<String> message = response.get(5, SECONDS); //gets the message back from the server
-            if (message.statusCode() == 404)
-                return message.body();
-            robotNumber = Integer.parseInt(message.body());
-            serverID = serverToJoin;
+            HttpResponse<String> ResponseMessage = response.get(5, SECONDS); //gets the message back from the server
+            if (ResponseMessage.statusCode() == 404)
+                return ResponseMessage.body();
+            robotNumber = Integer.parseInt(ResponseMessage.body());
+            serverID = JoinToserverGame;
 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return "service timeout";
@@ -160,7 +161,7 @@ public class Client implements Client_interface {
      //  leave our current game from server
 
     @Override
-    public void leaveGame() {
+    public void leaveTheGame() {
         if (Objects.equals(serverID, ""))
             return;
         HttpRequest request = HttpRequest.newBuilder()

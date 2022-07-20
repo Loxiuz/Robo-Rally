@@ -30,7 +30,7 @@ public class UpdateServerBoard extends Thread {
 
     public void updateBoarOnServer() {
         if (!gameController.board.gameOver) {
-            gameController.board = SerializeAndDeserialize.deserialize(client.getGameState(), true);
+            gameController.board = SerializeAndDeserialize.deserialize(client.getGameSituation(), true);
             Platform.runLater(gameController::updateBoard);
         }
     }

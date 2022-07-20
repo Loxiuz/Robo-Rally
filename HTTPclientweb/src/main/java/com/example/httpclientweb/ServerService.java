@@ -16,8 +16,8 @@ public class ServerService implements ClientWebInterface {
   //Update the id and game state on the server
     @Override
     public void updateGame(String id, String gameState) {
-        Server server = findServerID(id);
-        server.setGameState(gameState);
+        Server server = findGameID(id);
+        server.setGameSituation(gameState);
         if (server.getPlayersOnBoard() != 0) //if the max amount of player is set, we are done
             return;
         server.setPlayersOnBoard(StringUtils.countOccurrencesOf(gameState, "Player "));
@@ -25,7 +25,7 @@ public class ServerService implements ClientWebInterface {
 
     @Override
     public String joinToGame(String serverToJoin) {
-        Server s = findServerID(serverToJoin);
+        Server s = findGameID(serverToJoin);
         if (s == null)
             return "Server does not exist";
         if (s.getAmountOfPlayers() >= s.getPlayersOnBoard())
@@ -37,7 +37,7 @@ public class ServerService implements ClientWebInterface {
 
     @Override
     public void leaveTheGame(String serverId, int robot) {
-        Server server = findServerID(serverId);
+        Server server = findGameID(serverId);
         assert server != null;
         server.setPlayerSpotFilled(robot, false);
         server.removePlayer();
@@ -45,17 +45,17 @@ public class ServerService implements ClientWebInterface {
             servers.remove(server);
     }
 
-    // get game state from the server and return it in jason file
+    // get game situation from the server and return it in jason file
     @Override
-    public String getGameState(String serverId) {
-        return (findServerID(serverId)).getGameState();
+    public String getGameSituation(String serverId) {
+        return (findGameID(serverId)).getGameSituation();
     }
 
 
     // use title name of the server and return new gam id
     @Override
-    public String hostGame(String title) {
-        servers.add(new Server(title, GameID));
+    public String hostServerGame(String servername) {
+        servers.add(new Server(servername, GameID));
         String newServerId = String.valueOf(GameID);
         GameID++;
         return newServerId;
@@ -63,7 +63,7 @@ public class ServerService implements ClientWebInterface {
 
     // return list of server
     @Override
-    public String listOfGames() {
+    public String listOfServerGames() {
         Gson gson = new Gson();
 
         ArrayList<Server> server = new ArrayList<>();
@@ -76,9 +76,9 @@ public class ServerService implements ClientWebInterface {
     }
 
 
-    private Server findServerID(String serverId) {
+    private Server findGameID(String serverId) {
         for (Server e : servers) {
-            if (Objects.equals(e.getId(), serverId)) {
+            if (Objects.equals(e.getGameId(), serverId)) {
                 return e;
             }
         }

@@ -54,7 +54,7 @@ public class GameController {
         this.client = client;
 
         if (client != null) {
-            client.updateGame(SerializeAndDeserialize.serialize(board));
+            client.updateServerGame(SerializeAndDeserialize.serialize(board));
             playerNumber = client.getRobotNumber();
             updater = new UpdateServerBoard();
             updater.setGameController(this);
@@ -130,7 +130,7 @@ public class GameController {
 
             if (client != null) {
                 refreshUpdater();
-                pushGameState();
+                pushGameSituation();
             }
 
         } else if (client != null) {
@@ -291,7 +291,7 @@ public class GameController {
                 startProgrammingPhase();
             }
         }
-        pushGameState();
+        pushGameSituation();
         refreshUpdater();
     }
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
@@ -336,7 +336,7 @@ public class GameController {
 
             }
             if (client != null)
-                client.updateGame(SerializeAndDeserialize.serialize(board));
+                client.updateServerGame(SerializeAndDeserialize.serialize(board));
         }
     }
 
@@ -450,9 +450,9 @@ public class GameController {
 
      // Pushes the current game state to the connected server id
 
-    public void pushGameState() {
+    public void pushGameSituation() {
         if (client != null)
-            client.updateGame(SerializeAndDeserialize.serialize(board));
+            client.updateServerGame(SerializeAndDeserialize.serialize(board));
     }
 
 

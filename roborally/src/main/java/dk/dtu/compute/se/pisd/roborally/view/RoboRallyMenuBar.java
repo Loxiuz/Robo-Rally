@@ -42,6 +42,7 @@ public class RoboRallyMenuBar extends MenuBar {
     private MenuItem stopGame;
     private MenuItem exitApp;
 
+
     private  MenuItem MultiplayerGame;
     private  MenuItem ConnectServer;
     private  MenuItem DisconnectServer;
