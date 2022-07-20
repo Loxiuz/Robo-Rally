@@ -110,13 +110,11 @@ public class SaveAndLoad {
         }
     }
 
-    // all spaces on the board get a Field action
-
     /**
-     *
-     * @param board
-     * @param action
-     * @return
+     * A get method to get all spaces with a certain field action.
+     * @param board Relevant board.
+     * @param action A field action
+     * @return Returns list with to relevant spaces.
      */
     private static List<Space> getSpacesFieldAction(Board board, FieldAction action) {
         List<Space> spaces = new ArrayList<>();

@@ -4,10 +4,10 @@ import dk.dtu.compute.se.pisd.httpclient.Client;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
 import javafx.application.Platform;
 
-
-// this class update the board on the server when the game state is received it
-// the deserializes the json file and sends an async message to update the ui.
-
+/**
+ * This class update the board on the server when the game state is received it
+ * and deserializes the json file and sends an async message to update the ui.
+ */
 public class UpdateMultiplayerBoard extends Thread {
     GameController gameController;
     Client client;
