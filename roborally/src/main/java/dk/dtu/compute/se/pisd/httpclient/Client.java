@@ -21,7 +21,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  //Create a http client that can interact with the RoboRally game server
 
 public class Client implements Client_interface {
-    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
+    private static final HttpClient HTTPclient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(10)).build();
     private String server = "http://localhost:8080";    //server URL, can later be changed to get this data from a DNS request or pointing directly to a server IP.
     private String serverID = "";                       //will be used after creating the connection, to inform the server what game we are in.
@@ -43,7 +43,7 @@ public class Client implements Client_interface {
                 .setHeader("Content-Type", "application/json")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
             String result = response.thenApply(HttpResponse::body).get(5, HOURS);
             // Result ignorer for now
@@ -64,7 +64,7 @@ public class Client implements Client_interface {
                 .header("Content-Type", "application/json")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         String result;
         try {
             result = response.thenApply(HttpResponse::body).get(5, SECONDS);
@@ -89,7 +89,7 @@ public class Client implements Client_interface {
                 .header("Content-Type", "text/plain")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
             serverID = response.thenApply(HttpResponse::body).get(5, SECONDS);
             if (response.get().statusCode() == 500)
@@ -117,7 +117,7 @@ public class Client implements Client_interface {
                 .header("Content-Type", "application/json")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         String result;
         try {
             result = response.thenApply(HttpResponse::body).get(5, SECONDS);
@@ -137,13 +137,13 @@ public class Client implements Client_interface {
             leaveTheGame();
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(""))
-                .uri(URI.create(server + "//game/" + JoinToserverGame))
+                .uri(URI.create(server + "/game/" + JoinToserverGame))
                 .header("User-Agent", "RoboRally Client")
                 .header("Content-Type", "text/plain")
                 .build();
 
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
             HttpResponse<String> ResponseMessage = response.get(5, SECONDS); //gets the message back from the server
             if (ResponseMessage.statusCode() == 404)
@@ -173,7 +173,7 @@ public class Client implements Client_interface {
         new Thread(() -> {
             int tries = 0;
             CompletableFuture<HttpResponse<String>> response =
-                    HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                    HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
             do {
                 try {
                     response.get(5, SECONDS);

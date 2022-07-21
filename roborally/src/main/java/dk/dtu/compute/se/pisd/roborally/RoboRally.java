@@ -68,7 +68,7 @@ public class RoboRally extends Application {
     private static ObservableList<Server> data = FXCollections.observableArrayList();
     AppController appController;
 
-    Client client;
+    public Client client;
 
 
 
@@ -159,7 +159,11 @@ public class RoboRally extends Application {
 
         Button button = new Button("Join to a Game");
         button.setOnAction(e -> {appController.stopGame();
-            if (!ServerGameTable.getSelectionModel().isEmpty()) appController.ClientJoinGame(ServerGameTable.getSelectionModel().getSelectedItem().getGameId());
+            if (!ServerGameTable.getSelectionModel().isEmpty())
+                appController.ClientJoinGame(ServerGameTable.
+                        getSelectionModel().
+                        getSelectedItem().
+                        getGameId());
         });
 
         Button refresh = new Button("Refresh Connection");

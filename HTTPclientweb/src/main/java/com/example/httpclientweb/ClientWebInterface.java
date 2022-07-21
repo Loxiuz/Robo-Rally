@@ -5,13 +5,13 @@ package com.example.httpclientweb;
 
 public interface ClientWebInterface {
 
-    void updateGame(String Gameid, String gameSituation);
-    String hostServerGame(String title);
+    void updateServerGame(String Gameid, String gameSituation);
+    String hostServerGame(String ServerName);
     String getGameSituation(String serverId);
 
     String listOfServerGames();
-    String joinToGame(String serverToJoin);
-    void leaveTheGame(String serverId, int i);
+    String joinToServerGame(String serverToJoinGame);
+    void leaveServerGame(String serverId, int i);
 }
 
 

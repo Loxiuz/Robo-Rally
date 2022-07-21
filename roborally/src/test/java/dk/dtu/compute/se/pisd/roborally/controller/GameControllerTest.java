@@ -94,15 +94,14 @@ class GameControllerTest {
         Board board = null;
         try {
             board = SaveAndLoad.newBoard(2, "SprintCramp");
-            GameController gc = new GameController(null, board, null);
+            GameController gameController = new GameController(null, board, null);
 
             board.setCurrentPlayer(board.getPlayers().get(0));
-            gc.moveCurrentPlayerToSpace(board.getSpace(12, 8));
+            gameController.moveCurrentPlayerToSpace(board.getSpace(12, 8));
             board.setCurrentPlayer(board.getPlayers().get(0));
-            gc.moveCurrentPlayerToSpace(board.getSpace(5, 2));
+            gameController.moveCurrentPlayerToSpace(board.getSpace(5, 2));
             board.setCurrentPlayer(board.getPlayers().get(0));
-
-            gc.moveCurrentPlayerToSpace(board.getSpace(4, 9)); // Will cause exception
+            gameController.moveCurrentPlayerToSpace(board.getSpace(4, 9)); // Will cause exception
 
         } catch (BoardDoesNotExistException e) {
             Assertions.fail(); // Board not found

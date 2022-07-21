@@ -3,7 +3,7 @@ package com.example.httpclientweb;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Server {
+public class GameServer {
     private transient String GameSituation;
     private int numberOfPlayers;
     private int PlayersOnBoard;
@@ -11,25 +11,25 @@ public class Server {
     private final String GameId;
     private  String ServerName;
 
-    public Server(String title, int id) {
-        this.ServerName=String.valueOf(title);
-        this.GameId = String.valueOf(id);
+    public GameServer(String ServerName, int Gameid) {
+        this.ServerName=String.valueOf(ServerName);
+        this.GameId = String.valueOf(Gameid);
         this.numberOfPlayers = 1;
     }
 
-    public void addPlayer() {
+    public void addPlayerOnServer() {
         numberOfPlayers++;
     }
 
-    public void removePlayer() {
+    public void removePlayerFromServer() {
         numberOfPlayers--;
     }
 
-    public boolean isEmpty() {
+    public boolean ServerisEmpty() {
         return numberOfPlayers == 0;
     }
 
-    public int getAmountOfPlayers() {
+    public int getNumberOfPlayers() {
         return numberOfPlayers;
     }
 
@@ -52,9 +52,9 @@ public class Server {
         return PlayersOnBoard;
     }
 
-    public void setPlayersOnBoard(int amountOfPlayers) {
-        this. PlayersOnBoard = amountOfPlayers;
-        this.playerSpotFilled = new boolean[amountOfPlayers];
+    public void setPlayersOnBoard(int numberOfPlayers) {
+        this. PlayersOnBoard = numberOfPlayers;
+        this.playerSpotFilled = new boolean[numberOfPlayers];
         playerSpotFilled[0] = true;
     }
 
@@ -75,7 +75,7 @@ public class Server {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Server server = (Server) o;
+        GameServer server = (GameServer) o;
         return numberOfPlayers == server.numberOfPlayers && PlayersOnBoard == server.PlayersOnBoard &&
                 GameId.equals(server.GameId) && ServerName.equals(server.ServerName) && GameSituation.equals(server.GameSituation) &&
                 Arrays.equals(playerSpotFilled, server.playerSpotFilled);
