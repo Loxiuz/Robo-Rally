@@ -151,7 +151,8 @@ public class GameController {
     }
 
     /**
-     * @param register A card register to make visible.
+     * Makes a card register visible
+     * @param register the card register to make visible.
      */
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {

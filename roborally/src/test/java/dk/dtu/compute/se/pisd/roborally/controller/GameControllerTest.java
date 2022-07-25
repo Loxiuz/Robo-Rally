@@ -1,10 +1,9 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import dk.dtu.compute.se.pisd.httpclient.Client;
+import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
-import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,7 @@ class GameControllerTest {
     @BeforeEach
     void setUp() {
         Board board = new Board(TEST_WIDTH, TEST_HEIGHT);
-        //gameController = new GameController(board);
+        gameController = new GameController(new AppController(new RoboRally()), board, new Client());
         for (int i = 0; i < 6; i++) {
             Player player = new Player(board, null,"Player " + i);
             board.addPlayer(player);
@@ -33,6 +32,35 @@ class GameControllerTest {
     @AfterEach
     void tearDown() {
         gameController = null;
+    }
+
+    @Test
+    void startProgrammingPhase(){
+        Board board = gameController.board;
+        board.setPhase(Phase.INITIALISATION);
+        gameController.startProgrammingPhase();
+
+        Phase expected = Phase.PROGRAMMING;
+        Phase actual = gameController.board.getPhase();
+
+        Assertions.assertEquals(expected, actual,
+                "The active phase should be the programming phase.");
+    }
+    @Test
+    void finishProgrammingPhase(){
+        gameController.finishProgrammingPhase();
+        Assertions.assertEquals(Phase.ACTIVATION, gameController.board.getPhase(),
+                "The programming phase should end and shift to activation phase.");
+    }
+
+    @Test
+    void generateRandomCommandCard(){
+
+    }
+
+    @Test
+    void executeCommand(){
+
     }
 
     @Test
@@ -49,7 +77,6 @@ class GameControllerTest {
     }
 
     @Test
-
     void moveForward() {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();

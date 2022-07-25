@@ -188,7 +188,7 @@ public class AppController implements Observer {
 
 
     /**
-     * Start a new game and shows the Gui and set up game controller.
+     * Start a new game and shows the Gui and sets up game controller.
      * @param board Selected board to be used.
      */
     private void setupGameController(Board board) {
