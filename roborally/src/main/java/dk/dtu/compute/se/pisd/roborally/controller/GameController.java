@@ -255,7 +255,10 @@ public class GameController {
 
     public void Player_ChangeBoardPlayers() {
         Space antennaSpace = board.getPriorityAntennaSpace();
-        antennaSpace.getActions().get(0).doAction(this, antennaSpace);
+
+        if(antennaSpace.getActions().size() != 0){
+            antennaSpace.getActions().get(0).doAction(this, antennaSpace);
+        }
 
         // To avoid sync bug when playing online
         if (client == null) {

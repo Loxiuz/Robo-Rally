@@ -17,15 +17,16 @@ class GameControllerTest {
     private GameController gameController;
     @BeforeEach
     void setUp() {
-        Board board = new Board(TEST_WIDTH, TEST_HEIGHT);
-        gameController = new GameController(null, board, null);
+        gameController = new GameController(
+                null, new Board(TEST_WIDTH, TEST_HEIGHT), null);
+        Board board = gameController.board;
         for (int i = 0; i < 6; i++) {
             Player player = new Player(board, null,"Player " + i);
-            gameController.board.addPlayer(player);
+            board.addPlayer(player);
             player.setSpace(board.getSpace(i, i));
             player.setHeading(Heading.values()[i % Heading.values().length]);
         }
-        gameController.board.setCurrentPlayer(board.getPlayer(0));
+        board.setCurrentPlayer(board.getPlayer(0));
 
     }
 
@@ -41,15 +42,21 @@ class GameControllerTest {
         gameController.startProgrammingPhase();
 
         Phase expected = Phase.PROGRAMMING;
-        Phase actual = gameController.board.getPhase();
+        Phase actual = board.getPhase();
 
         Assertions.assertEquals(expected, actual,
                 "The active phase should be the programming phase.");
     }
     @Test
     void finishProgrammingPhase(){
+        Board board = gameController.board;
+        board.setPhase(Phase.PROGRAMMING);
         gameController.finishProgrammingPhase();
-        Assertions.assertEquals(Phase.ACTIVATION, gameController.board.getPhase(),
+
+        Phase expected = Phase.ACTIVATION;
+        Phase actual = board.getPhase();
+
+        Assertions.assertEquals(expected, actual,
                 "The programming phase should end and shift to activation phase.");
     }
 
