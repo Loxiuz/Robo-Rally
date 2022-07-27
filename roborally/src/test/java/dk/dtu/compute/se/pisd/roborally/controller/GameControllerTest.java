@@ -75,11 +75,6 @@ class GameControllerTest {
     }
 
     @Test
-    void executeCommand(){
-
-    }
-
-    @Test
     void moveCurrentPlayerToSpace() {
         Board board = gameController.board;
         Player player1 = board.getPlayer(0);
