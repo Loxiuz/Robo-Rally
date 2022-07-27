@@ -15,18 +15,18 @@ class GameControllerTest {
     private final int TEST_HEIGHT = 8;
 
     private GameController gameController;
-
     @BeforeEach
     void setUp() {
         Board board = new Board(TEST_WIDTH, TEST_HEIGHT);
-        gameController = new GameController(new AppController(new RoboRally()), board, new Client());
+        gameController = new GameController(null, board, null);
         for (int i = 0; i < 6; i++) {
             Player player = new Player(board, null,"Player " + i);
-            board.addPlayer(player);
+            gameController.board.addPlayer(player);
             player.setSpace(board.getSpace(i, i));
             player.setHeading(Heading.values()[i % Heading.values().length]);
         }
-        board.setCurrentPlayer(board.getPlayer(0));
+        gameController.board.setCurrentPlayer(board.getPlayer(0));
+
     }
 
     @AfterEach
@@ -55,7 +55,16 @@ class GameControllerTest {
 
     @Test
     void generateRandomCommandCard(){
-
+        Command[] commands = Command.values();
+        Command expected = null;
+        Command actual = gameController.generateRandomCommandCard().command;
+        for (Command command : commands) {
+            expected = command;
+            if (actual == expected) {
+                break;
+            }
+        }
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test

@@ -110,8 +110,6 @@ public class Client implements Client_interface {
         return "success";
     }
 
-
-    // list data in the server's table
     /**
      * Lists all games available on the server.
      * @return Returns response.
@@ -135,9 +133,6 @@ public class Client implements Client_interface {
         return result;
 
     }
-
-
-     //
 
     /**
      * Select an id and joins a game and get the current game state
