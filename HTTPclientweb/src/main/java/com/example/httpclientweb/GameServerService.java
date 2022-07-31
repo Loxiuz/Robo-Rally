@@ -1,9 +1,15 @@
 package com.example.httpclientweb;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -13,14 +19,15 @@ public class GameServerService implements ClientWebInterface {
     ArrayList<GameServer> gameServers = new ArrayList<>();
     private int GameID = 0;
 
+
   //Update the id and game state on the server
     @Override
-    public void updateServerGame(String id, String gameState) {
+    public void updateServerGame(String id, String gamesituation) {
         GameServer gameserver = findGameID(id);
-        gameserver.setGameSituation(gameState);
+        gameserver.setGameSituation(gamesituation);
         if (gameserver.getPlayersOnBoard() != 0) //if the max amount of player is set, we are done
             return;
-        gameserver.setPlayersOnBoard(StringUtils.countOccurrencesOf(gameState, "Player "));
+        gameserver.setPlayersOnBoard(StringUtils.countOccurrencesOf(gamesituation, "Player "));
     }
 
     @Override

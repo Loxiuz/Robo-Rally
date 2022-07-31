@@ -22,7 +22,6 @@
 package dk.dtu.compute.se.pisd.roborally.controller.fieldaction;
 
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.controller.RobotContoller;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -67,7 +66,7 @@ public class ConveyorBelt extends FieldAction {
                         return false;
                     }
 
-                    RobotContoller.moveForward(player, 1);
+                    GameController.moveForward(player, 1);
                 }
 
                 player.setHeading(playerHeading);

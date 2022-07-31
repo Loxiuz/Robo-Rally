@@ -1,6 +1,7 @@
-package dk.dtu.compute.se.pisd.roborally.controller;
+package dk.dtu.compute.se.pisd.httpclient;
 
 import dk.dtu.compute.se.pisd.httpclient.Client;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import javafx.application.Platform;
 

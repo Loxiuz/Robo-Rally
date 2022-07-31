@@ -7,11 +7,14 @@ public interface ClientWebInterface {
 
     void updateServerGame(String Gameid, String gameSituation);
     String hostServerGame(String ServerName);
-    String getGameSituation(String serverId);
+    String getGameSituation(String id);
 
     String listOfServerGames();
     String joinToServerGame(String serverToJoinGame);
     void leaveServerGame(String serverId, int i);
+
+
+
 }
 
 

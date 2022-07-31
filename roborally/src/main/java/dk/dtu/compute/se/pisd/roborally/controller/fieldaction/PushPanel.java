@@ -1,7 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.controller.fieldaction;
 
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.controller.RobotContoller;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -17,7 +16,7 @@ public class PushPanel extends FieldAction {
     public void setHeading(Heading heading) {
         this.heading = heading;
     }
-    RobotContoller robotContoller;
+
 
     @Override
     public boolean doAction(GameController gameController, Space space) {
@@ -29,7 +28,7 @@ public class PushPanel extends FieldAction {
             if (player != null) {
                 Heading playerHeading = player.getHeading();
                 player.setHeading(direction);
-                robotContoller.moveForward(player, 1);
+                GameController.moveForward(player, 1);
                 player.setHeading(playerHeading);
 
                 return true;

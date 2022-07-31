@@ -28,6 +28,7 @@ public class GameServerController {
     }
 
 
+
     @PutMapping(value = "/game/{id}")
     public ResponseEntity<String> joinToServerGame(@PathVariable String id) {
         String serverResponse = webSituation.joinToServerGame(id);
@@ -45,15 +46,34 @@ public class GameServerController {
     }
 
 
-    @GetMapping(value = "/gameState/{id}")
+    @GetMapping(value = "/gamestate/{id}")
     public ResponseEntity<String> getGameSituation(@PathVariable String id) {
         return ResponseEntity.ok().body(webSituation.getGameSituation(id));
     }
 
 
-    @PutMapping(value = "/gameState/{id}")
+    @PutMapping(value = "/gamestate/{id}")
     public ResponseEntity<String> setGameSituation(@PathVariable String id, @RequestBody String game) {
         webSituation.updateServerGame(id, game);
         return ResponseEntity.ok().body("ok");
     }
+
+    @PostMapping("/savegame")
+    public void saveGame(@RequestBody String jsonFile) {
+        SaveAndLoad gameSituation = new SaveAndLoad();
+        gameSituation.saveGame(jsonFile);
+    }
+
+    //retrieves a representation of the resource
+    @GetMapping("/loadgame")
+    public String loadGame() {
+        SaveAndLoad jsonfile = new SaveAndLoad();
+        return jsonfile.loadGame();
+    }
+
+    @PostMapping("/board")
+    public void Board(@RequestBody String jsonBoard) {
+        System.out.println(jsonBoard);
+    }
+
 }

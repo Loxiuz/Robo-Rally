@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.roborally.controller;
+package dk.dtu.compute.se.pisd.roborally.fileaccess;
 
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.StartGear;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SaveAndLoad {
 
     final static private List<String> PLAYERCOLORS = Arrays.asList("red", "green", "blue", "orange", "grey", "magenta");
-    private static final String JSONFile = "Json";
+    private static final String JSONFile = "json";
     private static final String SAVEDBOARDS = "SaveGames";
     private static final String BOARDS = "GameBoardsJson";
     private static boolean NewBoard = false;
@@ -28,6 +28,7 @@ public class SaveAndLoad {
 
     // Get the players board and it's data and seves the game in a file
     public static void SaveBoardGame(Board board, String name) {
+        String resource = SAVEDBOARDS + "/" + name + "." + JSONFile;
 
         // Setting up the board template
         String json = SerializeAndDeserialize.serialize(board);

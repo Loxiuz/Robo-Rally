@@ -76,7 +76,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
                 //Lasers
             } else if (space.getActions().get(0) instanceof Laser laser) {
-                imageView = new ImageView(new Image("laser" + laser.getNumberOfLasers() + ".png"));
+                imageView = new ImageView(new Image("laser" + ".png"));
                 imageView.setRotate((90 * laser.getHeading().ordinal()) % 360);
                 this.getChildren().add(imageView);
 

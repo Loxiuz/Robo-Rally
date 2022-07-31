@@ -41,13 +41,7 @@ public class RoboRallyMenuBar extends MenuBar {
     private MenuItem loadGame;
     private MenuItem stopGame;
     private MenuItem exitApp;
-
-
-    private  MenuItem MultiplayerGame;
-    private  MenuItem ConnectServer;
-    private  MenuItem DisconnectServer;
-    private  MenuItem Connecthostgame;
-
+    
 
     // RoboRally MenuBar constructor
 
@@ -77,33 +71,8 @@ public class RoboRallyMenuBar extends MenuBar {
         exitApp.setOnAction( e -> this.appController.exitGame());
         controlMenu.getItems().add(exitApp);
 
-
-        Menu serverMenu = new Menu("Network Game");
-        this.getMenus().add(serverMenu);
-
-        ConnectServer = new MenuItem("Server connection");
-        ConnectServer.setOnAction(e -> this.appController.Client_ConnectToServer());
-        serverMenu.getItems().add(ConnectServer);
-
-        Connecthostgame = new MenuItem("Host game");
-        Connecthostgame.setOnAction(e -> {
-            this.appController.stopGame();
-            this.appController.ClientHostGame();
-        });
-        serverMenu.getItems().add(Connecthostgame);
-
-        DisconnectServer = new MenuItem("server disconnection");
-        DisconnectServer.setOnAction(e -> {
-            this.appController.Client_Disconnect_Server();
-            this.appController.stopGame();
-        });
-        serverMenu.getItems().add(DisconnectServer);
-
-
         controlMenu.setOnShowing(e -> update());
         controlMenu.setOnShown(e -> this.updateBounds());
-        serverMenu.setOnShowing(e -> update());
-        serverMenu.setOnShown(e -> this.updateBounds());
         update();
 
 
@@ -116,9 +85,6 @@ public class RoboRallyMenuBar extends MenuBar {
             saveGame.setVisible(true);
             loadGame.setVisible(false);
 
-            ConnectServer.setVisible(true);
-            Connecthostgame.setVisible(true);
-            DisconnectServer.setVisible(true);
 
         } else {
             newGame.setVisible(true);

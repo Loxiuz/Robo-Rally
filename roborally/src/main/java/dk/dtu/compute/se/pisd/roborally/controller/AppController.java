@@ -27,6 +27,7 @@ import dk.dtu.compute.se.pisd.httpclient.Client;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.IOUtil;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import javafx.application.Platform;
@@ -118,6 +119,13 @@ public class AppController implements Observer {
         return dialog.showAndWait();
     }
 
+    public static Optional<String> loadBoardName(List<String> list) {
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(list.get(0), list);
+        dialog.setTitle("Load Game");
+        dialog.setHeaderText("load a game to play");
+
+        return dialog.showAndWait();
+    }
     // give a warning
     public static Optional<ButtonType> warningCase(String[] input) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -128,7 +136,7 @@ public class AppController implements Observer {
 
     // Save game Stage and let a player write a name and  save a game
     public void saveGame() {
-            String[] s = new String[]{"SAVE YOUR GAME", "Write a name and save your game"};
+            String[] s = new String[]{"SAVE YOUR GAME", "Save your game"};
             String dialog = AppController.getInput_ServerDialog(s);
 
             if (dialog != null)
@@ -137,7 +145,7 @@ public class AppController implements Observer {
 
     // player can load a game
     private void createLoadedGame() {
-        Optional<String> chosenBoard = AppController.ChooseBoardName(IOUtil.getSavedBoardsName());
+        Optional<String> chosenBoard = AppController.loadBoardName(IOUtil.getSavedBoardsName());
 
         if (chosenBoard.isPresent()) {
             try {
@@ -238,7 +246,6 @@ public class AppController implements Observer {
             newGame();
         }
     }
-
 
     // Player chooses an ID from server table and joins the game
     public void ClientJoinGame(String id) {

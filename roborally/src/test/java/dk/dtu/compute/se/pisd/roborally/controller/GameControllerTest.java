@@ -1,6 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
@@ -53,7 +54,7 @@ class GameControllerTest {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();
 
-        RobotContoller.moveForward(current, 1);
+        GameController.moveForward(current, 1);
 
         Assertions.assertEquals(current, board.getSpace(0, 1).getPlayer(), "Player " + current.getName() + " should beSpace (0,1)!");
         Assertions.assertEquals(Heading.SOUTH, current.getHeading(), "Player 0 should be heading SOUTH!");
@@ -71,7 +72,7 @@ class GameControllerTest {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();
 
-        RobotContoller.turnRight(current);
+        GameController.turnRight(current);
 
         Assertions.assertEquals(Heading.WEST, current.getHeading(),
                 "Player " + current.getName() + " should be heading west!");
@@ -82,7 +83,7 @@ class GameControllerTest {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();
 
-        RobotContoller.turnLeft(current);
+        GameController.turnLeft(current);
 
         Assertions.assertEquals(Heading.EAST, current.getHeading(),
                 "Player " + current.getName() + " should be heading East!");

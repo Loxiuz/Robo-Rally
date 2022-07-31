@@ -29,6 +29,9 @@ public class SerializeAndDeserialize {
         boardtemplate.stepMode = board.stepMode;
         boardtemplate.gameOver = board.gameOver;
 
+
+
+
         for (int i = 0; i < board.width; i++) {
             for (int j = 0; j < board.height; j++) {
                 Space space = board.getSpace(i, j);
@@ -155,6 +158,7 @@ public class SerializeAndDeserialize {
             result.step = boardTemplate.step;
             result.stepMode = boardTemplate.stepMode;
             result.gameOver = boardTemplate.gameOver;
+
         }
 
         for (SpaceTemplate spaceTemplate : boardTemplate.spaces) {

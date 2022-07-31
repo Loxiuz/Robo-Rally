@@ -1,5 +1,12 @@
 package com.example.httpclientweb;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -10,6 +17,7 @@ public class GameServer {
     private transient boolean[] playerSpotFilled;
     private final String GameId;
     private  String ServerName;
+
 
     public GameServer(String ServerName, int Gameid) {
         this.ServerName=String.valueOf(ServerName);
@@ -37,8 +45,8 @@ public class GameServer {
         return GameSituation;
     }
 
-    public void setGameSituation(String gameState) {
-        this.GameSituation = gameState;
+    public void setGameSituation(String gameSituation) {
+        this.GameSituation = gameSituation;
     }
 
     public String getGameId() {
@@ -71,6 +79,7 @@ public class GameServer {
         return 0;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,6 +89,7 @@ public class GameServer {
                 GameId.equals(server.GameId) && ServerName.equals(server.ServerName) && GameSituation.equals(server.GameSituation) &&
                 Arrays.equals(playerSpotFilled, server.playerSpotFilled);
     }
+
 
     @Override
     public int hashCode() {

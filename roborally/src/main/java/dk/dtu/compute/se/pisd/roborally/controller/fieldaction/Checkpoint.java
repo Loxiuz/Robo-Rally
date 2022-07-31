@@ -14,17 +14,14 @@ public class Checkpoint extends FieldAction {
         LastCheckpointNumber++;
     }
 
-
     public int getCheckpointNumber() {
         return checkpointNumber;
     }
 
+
     public static void setlastCheckpointNumber(int highestCheckpointNumber) {
         Checkpoint.LastCheckpointNumber = highestCheckpointNumber;
     }
-
-
-
     @Override
     public boolean doAction(GameController gameController, Space space) {
         if (space.getActions().size() > 0) {
@@ -41,7 +38,6 @@ public class Checkpoint extends FieldAction {
                     gameController.board.gameOver = true;
                     gameController.pushGameSituation();
                     gameController.endGame();
-
 
                 }
                 return true;

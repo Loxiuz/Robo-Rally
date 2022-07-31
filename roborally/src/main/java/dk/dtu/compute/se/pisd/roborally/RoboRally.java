@@ -68,7 +68,7 @@ public class RoboRally extends Application {
     private static ObservableList<Server> data = FXCollections.observableArrayList();
     AppController appController;
 
-    public Client client;
+    public Client client = new Client();
 
 
 
@@ -141,7 +141,7 @@ public class RoboRally extends Application {
 
         Button hostGame = new Button("Host Game");
         hostGame.setOnAction(e -> {
-             appController.ClientHostGame();
+            appController.ClientHostGame();
 
 
         });
@@ -151,11 +151,11 @@ public class RoboRally extends Application {
 
         });
 
-    Button Disconnect_from_server = new Button("Disconnect from Server");
+        Button Disconnect_from_server = new Button("Disconnect from Server");
         Disconnect_from_server.setOnAction(e -> {
-        appController.Client_ConnectToServer();
+            appController.Client_ConnectToServer();
 
-    });
+        });
 
         Button button = new Button("Join to a Game");
         button.setOnAction(e -> {appController.stopGame();
@@ -203,7 +203,7 @@ public class RoboRally extends Application {
 
     public void createBoardView(GameController gameController) {
         // if present, remove old BoardView
-       // boardRoot.getChildren().clear();
+        // boardRoot.getChildren().clear();
 
 
         if (gameController != null) {

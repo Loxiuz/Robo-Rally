@@ -22,8 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.httpclient.Client;
+import dk.dtu.compute.se.pisd.httpclient.UpdateServerBoard;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.*;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.Checkpoint;
+import dk.dtu.compute.se.pisd.roborally.exceptions.MoveNotPossibleException;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.BoardView;
@@ -32,6 +35,8 @@ import javafx.scene.control.Alert;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static dk.dtu.compute.se.pisd.roborally.model.Command.AGAIN;
 
 
 // all the game logic for RoboRally
@@ -311,8 +316,77 @@ public class GameController {
         }
     }
 
+    // Control robot moves, robot move forward
+    public static void moveForward(@NotNull Player player, int moves) {
+        for (int i = 0; i < moves; i++) {
+            try {
+                Heading heading = player.getHeading();
+                Space target = board.getNeighbour(player.getSpace(), heading);
+                if (target == null ||
+                        (target.getActions().size() > 0 && target.getActions().get(0) instanceof PriorityAntenna))
+                    throw new MoveNotPossibleException(player, player.getSpace(), heading);
+                if (isOccupied(target)) {
+                    Player playerBlocking = target.getPlayer();
+                    Heading targetCurrentHeading = playerBlocking.getHeading();
+                    playerBlocking.setHeading(player.getHeading());
+                    moveForward(playerBlocking, 1);
+                    playerBlocking.setHeading(targetCurrentHeading);
+                }
+                target.setPlayer(player);
+            } catch (MoveNotPossibleException e) {
 
-     // Takes a command from a command card and the player which is executing that given command
+            }
+        }
+    }
+
+
+
+    // Control robot moves, robot move one step back
+    public static void moveBackward(Player player) {
+        uTurn(player);
+        moveForward(player, 1);
+        uTurn(player);
+    }
+
+    // Control robot moves, robot Movie again
+    public void again(Player player, int step) {
+        if (step < 1) return;
+        Command prevCommand = player.getProgramField(step - 1).getCard().command;
+        if (prevCommand == AGAIN)
+            again(player, step - 1);
+        else {
+            player.getProgramField(step).setCard(new CommandCard(prevCommand));
+            executeNextStep();
+            player.getProgramField(step).setCard(new CommandCard(AGAIN));
+        }
+    }
+
+    // Control robot moves, robot turn Right
+    public static void turnRight(@NotNull Player player) {
+        if (player.board == board) {
+            player.setHeading(player.getHeading().next());
+        }
+    }
+
+    // Control robot moves, robot turn left
+    public static void turnLeft(@NotNull Player player) {
+        if (player.board == board) {
+            player.setHeading(player.getHeading().prev());
+        }
+    }
+
+    // Control robot moves, robot turn U
+    public static void uTurn(Player player) {
+        turnLeft(player);
+        turnLeft(player);
+    }
+    private static boolean isOccupied(Space space) {
+        Space target = board.getSpace(space.x, space.y);
+        return target.getPlayer() != null;
+    }
+
+
+    // Takes a command from a command card and the player which is executing that given command
 
     private void executeCommand(@NotNull Player player, Command command) {
         if (player.board == board && command != null) {
@@ -320,16 +394,16 @@ public class GameController {
             //     their execution. This should eventually be done in a more elegant way
             //     (this concerns the way cards are modelled as well as the way they are executed).
             switch (command) {
-                case MOVE1 ->RobotContoller.moveForward(player, 1);
-                case MOVE2 -> RobotContoller.moveForward(player, 2);
-                case MOVE3, SPEEDROUTINE ->RobotContoller.moveForward(player, 3);
-                case RIGHT -> RobotContoller.turnRight(player);
-                case LEFT -> RobotContoller.turnLeft(player);
-                case MOVEBACK ->RobotContoller. moveBackward(player);
-                case AGAIN, REPEATROUTINE -> RobotContoller.again(player, board.getStep());
+                case MOVE1 ->moveForward(player, 1);
+                case MOVE2 -> moveForward(player, 2);
+                case MOVE3, SPEEDROUTINE ->moveForward(player, 3);
+                case RIGHT -> turnRight(player);
+                case LEFT -> turnLeft(player);
+                case MOVEBACK ->moveBackward(player);
+                case AGAIN, REPEATROUTINE ->again(player, board.getStep());
                 case SPAM -> removeSpamCard(player);
                 case OPTION_LEFT_RIGHT, SANDBOXROUTINE, WEASELROUTINE -> board.setPhase(Phase.PLAYER_INTERACTION);
-                case UTURN -> RobotContoller.uTurn(player);
+                case UTURN -> uTurn(player);
 
                 default -> {
                 }

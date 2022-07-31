@@ -1,6 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import org.junit.jupiter.api.Assertions;

@@ -1,6 +1,8 @@
 package dk.dtu.compute.se.pisd.httpclient;
 
 import dk.dtu.compute.se.pisd.roborally.exceptions.IPNotValidException;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
+import dk.dtu.compute.se.pisd.roborally.model.Board;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -21,9 +23,14 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  //Create a http client that can interact with the RoboRally game server
 
 public class Client implements Client_interface {
-    private static final HttpClient HTTPclient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
-            .connectTimeout(Duration.ofSeconds(10)).build();
+
+    private static final HttpClient HTTPclient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+
     private String server = "http://localhost:8080";    //server URL, can later be changed to get this data from a DNS request or pointing directly to a server IP.
+    private String servers = "http://localhost:8081";
     private String serverID = "";                       //will be used after creating the connection, to inform the server what game we are in.
     private boolean connectedToServer = false;          //used to easily check if we already connected to a server, so that we can disconnect from that one first.
     private int robotNumber;                            //Is only used to free up our given robot in case we want to leave a game that has not yet concluded.
@@ -38,7 +45,7 @@ public class Client implements Client_interface {
     public void updateServerGame(String gameSituation) {
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(gameSituation))   //Http .put
-                .uri(URI.create(server + "/gameState/" + serverID))
+                .uri(URI.create(server + "/gameSituation/" + serverID))
                 .setHeader("User-Agent", "RoboRally Client")
                 .setHeader("Content-Type", "application/json")
                 .build();
@@ -132,12 +139,12 @@ public class Client implements Client_interface {
      // select an id and joins a game and get the current game state
 
     @Override
-    public String joinToAGame(String JoinToserverGame) {
-        if (!Objects.equals(JoinToserverGame, ""))
-            leaveTheGame();
+    public String joinToAGame(String id) {
+       if (!Objects.equals(id, ""))
+          leaveTheGame();
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(""))
-                .uri(URI.create(server + "/game/" + JoinToserverGame))
+                .uri(URI.create(server + "/game/" + id))
                 .header("User-Agent", "RoboRally Client")
                 .header("Content-Type", "text/plain")
                 .build();
@@ -145,18 +152,31 @@ public class Client implements Client_interface {
         CompletableFuture<HttpResponse<String>> response =
                 HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
-            HttpResponse<String> ResponseMessage = response.get(5, SECONDS); //gets the message back from the server
-            if (ResponseMessage.statusCode() == 404)
-                return ResponseMessage.body();
-            robotNumber = Integer.parseInt(ResponseMessage.body());
-            serverID = JoinToserverGame;
+            HttpResponse<String> responseMessage = response.get(5, SECONDS); //gets the message back from the server
+            if (responseMessage.statusCode() == 404)
+                return responseMessage.body();
+            robotNumber = Integer.parseInt(responseMessage.body());
+            serverID = id;
 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return "service timeout";
         }
         return "ok";
     }
+/*
+        HttpResponse<String> response = null;
+        try {
+            response = HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString()).get();
+            serverID=id;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return response.body();
+    }
 
+*/
 
      //  leave our current game from server
 
@@ -193,11 +213,31 @@ public class Client implements Client_interface {
         serverID = "";
     }
 
+    @Override
+    public String loadGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(servers + "/loadgame"))
+                .setHeader("User-Agent", "Roborally Client")
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response =  HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString()).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return response.body();
+    }
+
 
     // the methode goes throw the ip exception. if the ip is valid, set the ip of the server in the process
     public void setServer(String server) throws IPNotValidException {
         // Simple regex pattern to check for string contains ip
-        Pattern pattern = Pattern.compile("^(?:\\d{1,3}\\.){3}\\d{1,3}$");
+        Pattern pattern = Pattern.compile("");
         Matcher matcher = pattern.matcher(server);
         if (matcher.find())
             this.server = "http://" + server + ":8080";
@@ -210,4 +250,21 @@ public class Client implements Client_interface {
     public int getRobotNumber() {
         return robotNumber;
     }
-}
+
+
+    @Override
+    public void saveBoard(Board board) {
+            System.out.println(board.getPhase());
+            HttpRequest request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.ofString(SerializeAndDeserialize.serialize(board)))
+                    .uri(URI.create(server +"/savegame"))
+                    .setHeader("User-Agent", "Roborally Client")
+                    .header("Content-Type", "application/json")
+                    .build();
+
+            CompletableFuture<HttpResponse<String>> response =
+                    HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        }
+    }
+

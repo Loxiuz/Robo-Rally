@@ -1,7 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.controller.fieldaction;
 
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.controller.RobotContoller;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 /**
@@ -28,9 +27,9 @@ public class RotatingGear extends FieldAction {
         if (space.getActions().size() > 0) {
             RotatingGear gear = (RotatingGear) space.getActions().get(0);
             if (gear.getDirection() == Direction.LEFT) {
-                RobotContoller.turnLeft(space.getPlayer());
+                gameController.turnLeft(space.getPlayer());
             } else {
-                RobotContoller.turnRight(space.getPlayer());
+                GameController.turnRight(space.getPlayer());
             }
         } else {
             return false;

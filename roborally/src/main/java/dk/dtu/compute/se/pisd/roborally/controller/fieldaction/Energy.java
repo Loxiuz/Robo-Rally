@@ -5,15 +5,13 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 //
 public class Energy extends FieldAction {
-    private boolean hasEnergyCube;
+
 
    
 
     @Override
     public boolean doAction(GameController gameController, Space space) {
         boolean result = false;
-
-
         return result;
     }
 }
