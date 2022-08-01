@@ -27,7 +27,6 @@ class GameControllerTest {
             player.setHeading(Heading.values()[i % Heading.values().length]);
         }
         board.setCurrentPlayer(board.getPlayer(0));
-
     }
 
     @AfterEach
