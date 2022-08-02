@@ -5,19 +5,19 @@ package dk.dtu.compute.se.pisd.httpclient;
  */
 public class Server {
 
-    private String id;
-    private String title;
-    private transient String gameState;
+    private String GameId;
+    private String ServerName;
+    private transient String GameSituation;
     private int numberOfPlayers;
     private int PlayersOnBoard;
     private transient boolean[] playerSpotFilled;
 
-    public String getId() {
-        return id;
+    public String getGameId() {
+        return GameId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getServerName() {
+        return ServerName;
     }
 
     public int getnumberOfPlayers() {

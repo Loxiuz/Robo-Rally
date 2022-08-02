@@ -64,11 +64,11 @@ public class RoboRally extends Application {
 
     private BoardView boardView;
 
-    private TableView<Server> table = new TableView<>();
+    private TableView<Server> ServerGameTable = new TableView<>();
     private static ObservableList<Server> data = FXCollections.observableArrayList();
-    AppController appController1 , appController2 ,appController3;
+    AppController appController;
 
-    Client client;
+    public Client client = new Client();
 
 
 
@@ -118,13 +118,13 @@ public class RoboRally extends Application {
         TableColumn id = new TableColumn("ID");
         id.setMaxWidth(50);
         id.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Server, String>, ObservableValue<String>>)
-                p -> new ReadOnlyObjectWrapper(p.getValue().getId())
+                p -> new ReadOnlyObjectWrapper(p.getValue().getGameId())
         );
 
         TableColumn serverName = new TableColumn("Server Name");
         serverName.setMaxWidth(200);
         serverName.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Server, String>, ObservableValue<String>>)
-                p -> new ReadOnlyObjectWrapper(p.getValue().getTitle())
+                p -> new ReadOnlyObjectWrapper(p.getValue().getServerName())
         );
 
         TableColumn players = new TableColumn("Players");
@@ -141,47 +141,51 @@ public class RoboRally extends Application {
 
         Button hostGame = new Button("Host Game");
         hostGame.setOnAction(e -> {
-             appController2.ClientHostGame();
+            appController.ClientHostGame();
 
 
         });
         Button connect_to_server = new Button("Connect to Server");
         connect_to_server.setOnAction(e -> {
-            this.appController3.Client_ConnectToServer();
+            appController.Client_ConnectToServer();
 
         });
 
-    Button Disconnect_from_server = new Button("Disconnect from Server");
+        Button Disconnect_from_server = new Button("Disconnect from Server");
         Disconnect_from_server.setOnAction(e -> {
-        this.appController3.Client_ConnectToServer();
+            appController.Client_ConnectToServer();
 
-    });
+        });
 
         Button button = new Button("Join to a Game");
-        button.setOnAction(e -> {appController1.stopGame();
-            if (!table.getSelectionModel().isEmpty()) appController1.ClientJoinGame(table.getSelectionModel().getSelectedItem().getId());
+        button.setOnAction(e -> {appController.stopGame();
+            if (!ServerGameTable.getSelectionModel().isEmpty())
+                appController.ClientJoinGame(ServerGameTable.
+                        getSelectionModel().
+                        getSelectedItem().
+                        getGameId());
         });
 
         Button refresh = new Button("Refresh Connection");
-        refresh.setOnAction(e -> addServer(client.listGames()));
+        refresh.setOnAction(e -> addServer(client.listServerGames()));
 
 
 
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 10, 10, 10));
-        vbox.getChildren().addAll( table, hostGame,connect_to_server,button, refresh,Disconnect_from_server);
+        vbox.getChildren().addAll( ServerGameTable, hostGame,connect_to_server,button, refresh,Disconnect_from_server);
 
 
         boardRoot.setTop(menuBar);
         boardRoot.setRight(vbox);
         boardRoot.setCenter(imageView);
 
-        table.setItems(data);
-        table.getColumns().addAll(id, players, serverName,PlayersOnBoard );
-        table.isEditable();
-        table.setEditable(false);
-        table.setVisible(true);
+        ServerGameTable.setItems(data);
+        ServerGameTable.getColumns().addAll(id, players, serverName,PlayersOnBoard );
+        ServerGameTable.isEditable();
+        ServerGameTable.setEditable(false);
+        ServerGameTable.setVisible(true);
 
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
@@ -199,7 +203,7 @@ public class RoboRally extends Application {
 
     public void createBoardView(GameController gameController) {
         // if present, remove old BoardView
-       // boardRoot.getChildren().clear();
+        // boardRoot.getChildren().clear();
 
 
         if (gameController != null) {

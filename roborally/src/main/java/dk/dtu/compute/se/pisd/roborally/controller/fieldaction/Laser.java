@@ -8,23 +8,9 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 
 public class Laser extends FieldAction {
-    private int numberOfLasers;
     private Heading heading;
-
     public Heading getHeading() {
         return heading;
-    }
-
-    public void setHeading(Heading heading) {
-        this.heading = heading;
-    }
-
-    public void setNumberOfLasers(int numberOfLasers) {
-        this.numberOfLasers = numberOfLasers;
-    }
-
-    public int getNumberOfLasers() {
-        return numberOfLasers;
     }
 
 

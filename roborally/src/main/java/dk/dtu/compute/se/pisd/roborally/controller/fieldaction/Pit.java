@@ -31,7 +31,7 @@ public class Pit extends FieldAction {
                         break;
 
                     case 2:
-                        board.getSpace(0,3).setPlayer(player);
+                        board.getSpace(0,4).setPlayer(player);
                         reboot.doAction(gameController, player.getSpace());
                         player.setDmgcards(Command.SPAM);
                         player.setDmgcards(Command.SPAM);

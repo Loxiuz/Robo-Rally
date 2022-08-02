@@ -83,7 +83,7 @@ public class BoardView extends VBox implements ViewObserver {
         }
     }
 
-    //copy
+
     private void removeChildren() {
         this.getChildren().remove(mainBoardPane);
         this.getChildren().remove(playersView);
@@ -121,7 +121,7 @@ public class BoardView extends VBox implements ViewObserver {
         }
 
     }
-    //copy
+
     public void updatePlayersView() {
         removeChildren();
         playersView = new PlayersView(gameController);

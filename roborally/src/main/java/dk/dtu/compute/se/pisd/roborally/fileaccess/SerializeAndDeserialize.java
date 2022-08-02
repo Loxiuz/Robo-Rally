@@ -14,12 +14,12 @@ import java.util.List;
 // serialize and deserialize instances of RoboRally Boards into JSON and from Json to the board
 
 
-public class SerializeState {
+public class SerializeAndDeserialize {
 
 
      // Serializes the board into  JSON file.
 
-    public static String serializeGame(Board board) {
+    public static String serialize(Board board) {
         // board and space template
         BoardTemplate boardtemplate = new BoardTemplate();
         boardtemplate.width = board.width;
@@ -28,6 +28,9 @@ public class SerializeState {
         boardtemplate.step = board.step;
         boardtemplate.stepMode = board.stepMode;
         boardtemplate.gameOver = board.gameOver;
+
+
+
 
         for (int i = 0; i < board.width; i++) {
             for (int j = 0; j < board.height; j++) {
@@ -54,7 +57,6 @@ public class SerializeState {
 
             playerTemplate.name = player.name;
             playerTemplate.color = player.color;
-            playerTemplate.energyCount = player.energyCount;
             playerTemplate.checkPoints = player.checkPoints;
             playerTemplate.priority = player.priority;
             playerTemplate.spaceX = player.space.x;
@@ -139,7 +141,7 @@ public class SerializeState {
 
      //Deserializes a  string in JSON format to a Board.
 
-    public static Board deserializeGame(String jsonString, boolean savedGame) {
+    public static Board deserialize(String jsonString, boolean savedGame) {
         GsonBuilder JsonBuilder = new GsonBuilder().registerTypeAdapter(FieldAction.class, new Adapter<FieldAction>());
         Gson gson = JsonBuilder.create();
 
@@ -176,7 +178,6 @@ public class SerializeState {
 
             newPlayer.setSpace(result.getSpace(playerTemplate.spaceX, playerTemplate.spaceY));
             newPlayer.heading = Heading.valueOf(playerTemplate.heading);
-            newPlayer.energyCount = playerTemplate.energyCount;
             newPlayer.checkPoints = playerTemplate.checkPoints;
             newPlayer.priority = playerTemplate.priority;
 

@@ -29,7 +29,7 @@ public class RotatingGear extends FieldAction {
             if (gear.getDirection() == Direction.LEFT) {
                 gameController.turnLeft(space.getPlayer());
             } else {
-                gameController.turnRight(space.getPlayer());
+                GameController.turnRight(space.getPlayer());
             }
         } else {
             return false;

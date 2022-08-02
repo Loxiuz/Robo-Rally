@@ -222,7 +222,7 @@ public class Board extends Subject {
                 }
             }
         }
-        return spaces[4][4]; // Default value, should never return this if board.csv is made with one.
+        return spaces[4][4];
     }
     public Space[][] getSpaces() {
         return spaces;

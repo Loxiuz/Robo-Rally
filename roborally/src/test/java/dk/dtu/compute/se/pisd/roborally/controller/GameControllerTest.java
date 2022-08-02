@@ -1,8 +1,8 @@
-package dk.dtu.compute.se.pisd.roborally.controller;
+package java.dk.dtu.compute.se.pisd.roborally.controller;
 
-import dk.dtu.compute.se.pisd.httpclient.Client;
-import dk.dtu.compute.se.pisd.roborally.RoboRally;
-import dk.dtu.compute.se.pisd.roborally.exceptions.BoardNotFoundException;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.controller.SaveAndLoad;
+import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -128,21 +128,20 @@ class GameControllerTest {
 
 
     @Test
-    void testCheckPointsInCorrectOrder() {
+    void testCheckPoints() {
         Board board = null;
         try {
             board = SaveAndLoad.newBoard(2, "SprintCramp");
-            GameController gc = new GameController(null, board, null);
+            GameController gameController = new GameController(null, board, null);
 
             board.setCurrentPlayer(board.getPlayers().get(0));
-            gc.moveCurrentPlayerToSpace(board.getSpace(12, 8));
+            gameController.moveCurrentPlayerToSpace(board.getSpace(12, 8));
             board.setCurrentPlayer(board.getPlayers().get(0));
-            gc.moveCurrentPlayerToSpace(board.getSpace(5, 2));
+            gameController.moveCurrentPlayerToSpace(board.getSpace(5, 2));
             board.setCurrentPlayer(board.getPlayers().get(0));
+            gameController.moveCurrentPlayerToSpace(board.getSpace(4, 9)); // Will cause exception
 
-            gc.moveCurrentPlayerToSpace(board.getSpace(4, 9)); // Will cause exception
-
-        } catch (BoardNotFoundException e) {
+        } catch (BoardDoesNotExistException e) {
             Assertions.fail(); // Board not found
         } catch (ExceptionInInitializerError e2) {
             Assertions.assertEquals(3, board.getCurrentPlayer().checkPoints);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="web" name="Web">
       <configuration>
@@ -21,11 +21,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../roborally/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../roborally/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../roborally/src/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../roborally/src/test/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../roborally/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
@@ -92,5 +90,16 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.21" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:5.3.21" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.8.4" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:17.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:17.0.1" level="project" />
   </component>
 </module>

@@ -17,6 +17,7 @@ public class PushPanel extends FieldAction {
         this.heading = heading;
     }
 
+
     @Override
     public boolean doAction(GameController gameController, Space space) {
         if (space.getActions().size() > 0) {
@@ -27,7 +28,7 @@ public class PushPanel extends FieldAction {
             if (player != null) {
                 Heading playerHeading = player.getHeading();
                 player.setHeading(direction);
-                gameController.moveForward(player, 1);
+                GameController.moveForward(player, 1);
                 player.setHeading(playerHeading);
 
                 return true;

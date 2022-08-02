@@ -22,9 +22,6 @@ public class Checkpoint extends FieldAction {
     public static void setlastCheckpointNumber(int highestCheckpointNumber) {
         Checkpoint.LastCheckpointNumber = highestCheckpointNumber;
     }
-
-
-
     @Override
     public boolean doAction(GameController gameController, Space space) {
         if (space.getActions().size() > 0) {
@@ -39,9 +36,8 @@ public class Checkpoint extends FieldAction {
                     gameController.Winner_Massage(space);
                     LastCheckpointNumber = 0; // Needs because the static variable is never resat
                     gameController.board.gameOver = true;
-                    gameController.pushGameState();
+                    gameController.pushGameSituation();
                     gameController.endGame();
-
 
                 }
                 return true;

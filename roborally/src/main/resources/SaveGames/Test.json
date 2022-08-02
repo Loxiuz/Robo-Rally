@@ -1,4 +1,4 @@
-  {
+{
   "width": 13,
   "height": 10,
   "phase": "ACTIVATION",
@@ -122,7 +122,6 @@
         }
       ]
     },
-
     {
       "name": "Player 2",
       "color": "green",
@@ -480,7 +479,6 @@
       "x": 3,
       "y": 9
     },
-
     {
       "walls": [],
       "actions": [
@@ -494,7 +492,6 @@
       "x": 4,
       "y": 2
     },
-
     {
       "walls": [],
       "actions": [
@@ -565,7 +562,6 @@
       "x": 4,
       "y": 9
     },
-
     {
       "walls": [],
       "actions": [
@@ -669,7 +665,6 @@
     {
       "walls": [
         "WEST"
-
       ],
       "actions": [
         {
@@ -797,7 +792,6 @@
     {
       "walls": [
         "SOUTH"
-
       ],
       "actions": [
         {
@@ -813,7 +807,6 @@
     {
       "walls": [
         "WEST"
-
       ],
       "actions": [
         {
@@ -840,7 +833,6 @@
       "x": 9,
       "y": 8
     },
-
     {
       "walls": [],
       "actions": [
@@ -877,7 +869,6 @@
       "x": 10,
       "y": 7
     },
-
     {
       "walls": [],
       "actions": [
@@ -984,7 +975,6 @@
       "x": 12,
       "y": 1
     },
-
     {
       "walls": [],
       "actions": [
@@ -998,7 +988,6 @@
       "x": 12,
       "y": 5
     },
-
     {
       "walls": [],
       "actions": [

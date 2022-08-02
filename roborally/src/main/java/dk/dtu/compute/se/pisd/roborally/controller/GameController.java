@@ -25,7 +25,7 @@ import dk.dtu.compute.se.pisd.httpclient.Client;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.*;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.exceptions.MoveNotPossibleException;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.BoardView;
 import javafx.application.Platform;
@@ -42,12 +42,12 @@ import static dk.dtu.compute.se.pisd.roborally.model.Command.AGAIN;
  */
 public class GameController {
 
-    public Board board;
+    public static Board board;
     final private AppController appController;
 
     public final Client client;
     private boolean skipProgrammingPhase = true;
-    private UpdateMultiplayerBoard updater;
+    private UpdateServerBoard updater;
     private int playerNumber;
 
 
@@ -60,9 +60,9 @@ public class GameController {
         this.client = client;
 
         if (client != null) {
-            client.updateGame(SerializeState.serializeGame(board));
+            client.updateServerGame(SerializeAndDeserialize.serialize(board));
             playerNumber = client.getRobotNumber();
-            updater = new UpdateMultiplayerBoard();
+            updater = new UpdateServerBoard();
             updater.setGameController(this);
             updater.setClient(client);
             updater.start();
@@ -142,7 +142,7 @@ public class GameController {
 
             if (client != null) {
                 refreshUpdater();
-                pushGameState();
+                pushGameSituation();
             }
 
         } else if (client != null) {
@@ -312,7 +312,7 @@ public class GameController {
                 startProgrammingPhase();
             }
         }
-        pushGameState();
+        pushGameSituation();
         refreshUpdater();
     }
 
@@ -364,7 +364,7 @@ public class GameController {
 
             }
             if (client != null)
-                client.updateGame(SerializeState.serializeGame(board));
+                client.updateServerGame(SerializeAndDeserialize.serialize(board));
         }
     }
 
@@ -391,7 +391,7 @@ public class GameController {
      * @param player Player/robot to be moved.
      * @param moves Number of moves.
      */
-    public void moveForward(@NotNull Player player, int moves) {
+    public static void moveForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
             try {
                 Heading heading = player.getHeading();
@@ -408,7 +408,7 @@ public class GameController {
                 }
                 target.setPlayer(player);
             } catch (MoveNotPossibleException e) {
-                // Do nothing for now...
+
             }
         }
     }
@@ -417,7 +417,7 @@ public class GameController {
      * Turns player's robot 90 degrees right.
      * @param player Player turning.
      */
-    public void turnRight(@NotNull Player player) {
+    public static void turnRight(@NotNull Player player) {
         if (player.board == board) {
             player.setHeading(player.getHeading().next());
         }
@@ -427,7 +427,7 @@ public class GameController {
      * Turns player's robot degrees left.
      * @param player Player turning.
      */
-    public void turnLeft(@NotNull Player player) {
+    public static void turnLeft(@NotNull Player player) {
         if (player.board == board) {
             player.setHeading(player.getHeading().prev());
         }
@@ -437,7 +437,7 @@ public class GameController {
      * Turns player's robot 180 degrees.
      * @param player Player turning.
      */
-    public void uTurn(Player player) {
+    public static void uTurn(Player player) {
         turnLeft(player);
         turnLeft(player);
     }
@@ -448,7 +448,7 @@ public class GameController {
      * Moves player backwards.
      * @param player Player to be moved.
      */
-    public void moveBackward(Player player) {
+    public static void moveBackward(Player player) {
         uTurn(player);
         moveForward(player, 1);
         uTurn(player);
@@ -477,7 +477,7 @@ public class GameController {
      * Checks if a space is occupied by a player.
      * @param space Space to check.
      */
-    private boolean isOccupied(Space space) {
+    private static boolean isOccupied(Space space) {
         Space target = board.getSpace(space.x, space.y);
         return target.getPlayer() != null;
     }
@@ -574,12 +574,13 @@ public class GameController {
                 updater.setUpdate(false);
         }
 
+
     /**
      * Pushes the current game state to the connected server id
      */
-    public void pushGameState() {
+    public void pushGameSituation() {
         if (client != null)
-            client.updateGame(SerializeState.serializeGame(board));
+            client.updateServerGame(SerializeAndDeserialize.serialize(board));
     }
 
     /**
@@ -613,10 +614,11 @@ public class GameController {
      * @param space
      */
     public void Winner_Massage(Space space){
-        Alert winMsg = new Alert(Alert.AlertType.INFORMATION);
-        winMsg.setTitle("Game Ended");
-        winMsg.setHeaderText("The game has ended. " + " The winner is: " + space.getPlayer().getName());
-        winMsg.showAndWait();
+        Alert winnerMassage = new Alert(Alert.AlertType.INFORMATION);
+        winnerMassage.setTitle("Game Ended");
+        winnerMassage.setHeaderText("The game has ended. " + " The winner is: " + space.getPlayer().getName());
+        winnerMassage.showAndWait();
+
     }
 
 }

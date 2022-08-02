@@ -1,14 +1,16 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.httpclient.Client;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeState;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import javafx.application.Platform;
+
 
 /**
  * This class update the board on the server when the game state is received it
  * and deserializes the json file and sends an async message to update the ui.
  */
-public class UpdateMultiplayerBoard extends Thread {
+
+public class UpdateServerBoard extends Thread {
     GameController gameController;
     Client client;
     boolean update = true;
@@ -30,7 +32,7 @@ public class UpdateMultiplayerBoard extends Thread {
 
     public void updateBoarOnServer() {
         if (!gameController.board.gameOver) {
-            gameController.board = SerializeState.deserializeGame(client.getGameState(), true);
+            gameController.board = SerializeAndDeserialize.deserialize(client.getGameSituation(), true);
             Platform.runLater(gameController::updateBoard);
         }
     }

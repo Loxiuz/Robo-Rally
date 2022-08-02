@@ -1,6 +1,8 @@
 package dk.dtu.compute.se.pisd.httpclient;
 
 import dk.dtu.compute.se.pisd.roborally.exceptions.IPNotValidException;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
+import dk.dtu.compute.se.pisd.roborally.model.Board;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -21,9 +23,14 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Create a http client that can interact with the RoboRally game server.
  */
 public class Client implements Client_interface {
-    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2)
-            .connectTimeout(Duration.ofSeconds(10)).build();
+
+    private static final HttpClient HTTPclient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+
     private String server = "http://localhost:8080";    //server URL, can later be changed to get this data from a DNS request or pointing directly to a server IP.
+    private String servers = "http://localhost:8081";
     private String serverID = "";                       //will be used after creating the connection, to inform the server what game we are in.
     private boolean connectedToServer = false;          //used to easily check if we already connected to a server, so that we can disconnect from that one first.
     private int robotNumber;                            //Is only used to free up our given robot in case we want to leave a game that has not yet concluded.
@@ -34,18 +41,18 @@ public class Client implements Client_interface {
 
     /**
      * Uses Json and update the game state on the server and server can store this state.
-     * @param gameState The state to be stored.
+     * @param gameSituation The state to be stored.
      */
     @Override
-    public void updateGame(String gameState) {
+    public void updateServerGame(String gameSituation) {
         HttpRequest request = HttpRequest.newBuilder()
-                .PUT(HttpRequest.BodyPublishers.ofString(gameState))   //Http .put
-                .uri(URI.create(server + "/gameState/" + serverID))
+                .PUT(HttpRequest.BodyPublishers.ofString(gameSituation))   //Http .put
+                .uri(URI.create(server + "/gameSituation/" + serverID))
                 .setHeader("User-Agent", "RoboRally Client")
                 .setHeader("Content-Type", "application/json")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
             String result = response.thenApply(HttpResponse::body).get(5, HOURS);
             // Result ignorer for now
@@ -60,15 +67,15 @@ public class Client implements Client_interface {
      * @return Returns the response.
      */
     @Override
-    public String getGameState() {
+    public String getGameSituation() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()                                               // http .Get request for game state
-                .uri(URI.create(server + "/gameState/" + serverID))
+                .uri(URI.create(server + "/gameSituation/" + serverID))
                 .setHeader("User-Agent", "RoboRally Client")
                 .header("Content-Type", "application/json")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         String result;
         try {
             result = response.thenApply(HttpResponse::body).get(5, SECONDS);
@@ -81,21 +88,21 @@ public class Client implements Client_interface {
 
     /**
      * Hosts a new game on the server and sets the server id.
-     * @param title Title of the game to be hosted.
+     * @param ServerName Title of the game to be hosted.
      * @return Returns "success" if running correctly.
      */
     @Override
-    public String hostGame(String title) {
+    public String hostServerGame(String ServerName) {
         if (!Objects.equals(serverID, ""))
-            leaveGame();
+            leaveTheGame();
         HttpRequest request = HttpRequest.newBuilder()
-                .POST(HttpRequest.BodyPublishers.ofString(title))
+                .POST(HttpRequest.BodyPublishers.ofString(ServerName))
                 .uri(URI.create(server + "/game"))
                 .setHeader("User-Agent", "RoboRally Client")
                 .header("Content-Type", "text/plain")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
             serverID = response.thenApply(HttpResponse::body).get(5, SECONDS);
             if (response.get().statusCode() == 500)
@@ -115,7 +122,7 @@ public class Client implements Client_interface {
      * @return Returns response.
      */
     @Override
-    public String listGames() {
+    public String listServerGames() {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(server + "/game"))
@@ -123,7 +130,7 @@ public class Client implements Client_interface {
                 .header("Content-Type", "application/json")
                 .build();
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         String result;
         try {
             result = response.thenApply(HttpResponse::body).get(5, SECONDS);
@@ -136,27 +143,28 @@ public class Client implements Client_interface {
 
     /**
      * Select an id and joins a game and get the current game state
-     * @param serverToJoin An ID of a server.
+     * @param id An ID of a server.
      * @return Returns "ok" as confirmation.
      */
     @Override
-    public String joinGame(String serverToJoin) {
-        if (!Objects.equals(serverToJoin, ""))
-            leaveGame();
+    public String joinToAGame(String id) {
+       if (!Objects.equals(id, ""))
+          leaveTheGame();
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(HttpRequest.BodyPublishers.ofString(""))
-                .uri(URI.create(server + "/game/" + serverToJoin))
+                .uri(URI.create(server + "/game/" + id))
                 .header("User-Agent", "RoboRally Client")
                 .header("Content-Type", "text/plain")
                 .build();
+
         CompletableFuture<HttpResponse<String>> response =
-                HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         try {
-            HttpResponse<String> message = response.get(5, SECONDS); //gets the message back from the server
-            if (message.statusCode() == 404)
-                return message.body();
-            robotNumber = Integer.parseInt(message.body());
-            serverID = serverToJoin;
+            HttpResponse<String> responseMessage = response.get(5, SECONDS); //gets the message back from the server
+            if (responseMessage.statusCode() == 404)
+                return responseMessage.body();
+            robotNumber = Integer.parseInt(responseMessage.body());
+            serverID = id;
 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             return "service timeout";
@@ -170,7 +178,7 @@ public class Client implements Client_interface {
      * leave our current game from server.
      */
     @Override
-    public void leaveGame() {
+    public void leaveTheGame() {
         if (Objects.equals(serverID, ""))
             return;
         HttpRequest request = HttpRequest.newBuilder()
@@ -182,7 +190,7 @@ public class Client implements Client_interface {
         new Thread(() -> {
             int tries = 0;
             CompletableFuture<HttpResponse<String>> response =
-                    HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                    HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
             do {
                 try {
                     response.get(5, SECONDS);
@@ -202,11 +210,31 @@ public class Client implements Client_interface {
         serverID = "";
     }
 
+    @Override
+    public String loadGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(servers + "/loadgame"))
+                .setHeader("User-Agent", "Roborally Client")
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response =  HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString()).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return response.body();
+    }
+
 
     // the methode goes throw the ip exception. if the ip is valid, set the ip of the server in the process
     public void setServer(String server) throws IPNotValidException {
         // Simple regex pattern to check for string contains ip
-        Pattern pattern = Pattern.compile("^(?:\\d{1,3}\\.){3}\\d{1,3}$");
+        Pattern pattern = Pattern.compile("");
         Matcher matcher = pattern.matcher(server);
         if (matcher.find())
             this.server = "http://" + server + ":8080";
@@ -219,4 +247,21 @@ public class Client implements Client_interface {
     public int getRobotNumber() {
         return robotNumber;
     }
-}
+
+
+    @Override
+    public void saveBoard(Board board) {
+            System.out.println(board.getPhase());
+            HttpRequest request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.ofString(SerializeAndDeserialize.serialize(board)))
+                    .uri(URI.create(server +"/savegame"))
+                    .setHeader("User-Agent", "Roborally Client")
+                    .header("Content-Type", "application/json")
+                    .build();
+
+            CompletableFuture<HttpResponse<String>> response =
+                    HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        }
+    }
+
