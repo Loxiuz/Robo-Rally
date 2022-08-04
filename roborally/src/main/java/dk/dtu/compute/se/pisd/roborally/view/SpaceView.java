@@ -74,10 +74,20 @@ public class SpaceView extends StackPane implements ViewObserver {
                 imageView.setRotate((90 * conveyorBelt.getHeading().ordinal()) % 360);
                 this.getChildren().add(imageView);
 
-                //Lasers
-            } else if (space.getActions().get(0) instanceof Laser laser) {
-                imageView = new ImageView(new Image("laser" + ".png"));
-                imageView.setRotate((90 * laser.getHeading().ordinal()) % 360);
+
+                //Rotating Gear Right and Left
+            } else if (space.getActions().get(0) instanceof RotatingGear rotatingGear) {
+                if (rotatingGear.getDirection() == RotatingGear.headingDirection.RIGHT) {
+                    imageView = new ImageView(new Image("Images/rotatingGearRight.png"));
+                } else {
+                    imageView = new ImageView(new Image("Images/rotatingGearLeft.png"));
+                }
+                this.getChildren().add(imageView);
+
+
+                //Pit
+            } else if (space.getActions().get(0) instanceof Pit) {
+                imageView = new ImageView(new Image("Images/pit.png"));
                 this.getChildren().add(imageView);
 
                 //PushPanels
@@ -91,36 +101,14 @@ public class SpaceView extends StackPane implements ViewObserver {
                 imageView = new ImageView(new Image("Images/energy.png"));
                 this.getChildren().add(imageView);
 
-                //Rotating Gear Right and Left
-            } else if (space.getActions().get(0) instanceof RotatingGear rotatingGear) {
-                if (rotatingGear.getDirection() == RotatingGear.Direction.RIGHT) {
-                    imageView = new ImageView(new Image("Images/rotatingGearRight.png"));
-                } else {
-                    imageView = new ImageView(new Image("Images/rotatingGearLeft.png"));
-                }
-                this.getChildren().add(imageView);
-
-                //Pit
-            } else if (space.getActions().get(0) instanceof Pit) {
-                imageView = new ImageView(new Image("Images/pit.png"));
-                this.getChildren().add(imageView);
-
                 //numbers of Check Points
             } else if (space.getActions().get(0) instanceof Checkpoint checkpoint) {
                 switch (checkpoint.getCheckpointNumber()) {
                     case 1 -> imageView = new ImageView(new Image("Images/checkPoint1.png"));
                     case 2 -> imageView = new ImageView(new Image("Images/checkPoint2.png"));
                     case 3 -> imageView = new ImageView(new Image("Images/checkPoint3.png"));
-                    case 4 -> imageView = new ImageView(new Image("Images/checkPoint4.png"));
-                    case 5 -> imageView = new ImageView(new Image("Images/checkPoint5.png"));
-                    case 6 -> imageView = new ImageView(new Image("Images/checkPoint6.png"));
                     default -> imageView = new ImageView(new Image("Images/background.png"));
                 }
-                this.getChildren().add(imageView);
-
-                //Antenna
-            } else if (space.getActions().get(0) instanceof PriorityAntenna) {
-                imageView = new ImageView(new Image("Images/priorityAntenna.png"));
                 this.getChildren().add(imageView);
 
                 //Starting Gear
@@ -131,6 +119,11 @@ public class SpaceView extends StackPane implements ViewObserver {
                 //Reboot
             } else if (space.getActions().get(0) instanceof RebootToken) {
                 imageView = new ImageView(new Image("Images/reboot.png"));
+                this.getChildren().add(imageView);
+
+                //Antenna
+            } else if (space.getActions().get(0) instanceof PriorityAntenna) {
+                imageView = new ImageView(new Image("Images/priorityAntenna.png"));
                 this.getChildren().add(imageView);
             }
 
