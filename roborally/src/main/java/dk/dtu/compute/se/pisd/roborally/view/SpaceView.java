@@ -93,7 +93,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
                 //Rotating Gear Right and Left
             } else if (space.getActions().get(0) instanceof RotatingGear rotatingGear) {
-                if (rotatingGear.getDirection() == RotatingGear.Direction.RIGHT) {
+                if (rotatingGear.getDirection() == RotatingGear.moveDirection.RIGHT) {
                     imageView = new ImageView(new Image("Images/rotatingGearRight.png"));
                 } else {
                     imageView = new ImageView(new Image("Images/rotatingGearLeft.png"));

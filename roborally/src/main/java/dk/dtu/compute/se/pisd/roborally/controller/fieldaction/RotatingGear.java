@@ -7,18 +7,10 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
 
  */
 public class RotatingGear extends FieldAction {
-    public enum Direction {
-        LEFT,
-        RIGHT
-    }
 
-    private Direction direction;
+    private moveDirection direction;
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    public Direction getDirection() {
+    public moveDirection getDirection() {
         return direction;
     }
 
@@ -26,7 +18,7 @@ public class RotatingGear extends FieldAction {
     public boolean doAction(GameController gameController, Space space) {
         if (space.getActions().size() > 0) {
             RotatingGear gear = (RotatingGear) space.getActions().get(0);
-            if (gear.getDirection() == Direction.LEFT) {
+            if (gear.getDirection() == moveDirection.LEFT) {
                 gameController.turnLeft(space.getPlayer());
             } else {
                 GameController.turnRight(space.getPlayer());
@@ -37,4 +29,10 @@ public class RotatingGear extends FieldAction {
 
         return true;
     }
+
+    public enum moveDirection {
+        LEFT,
+        RIGHT
+    }
+
 }
