@@ -42,43 +42,25 @@ public enum Command {
     AGAIN("Again!"),
 
     //Damage cards
-    SPAM("SPAM"),
-    TROJANHORSE("TROJAN HORSE"),
-    WORM("WORM"),
-    VIRUS("VIRUS"),
+    SPAMDamge("SPAM"),
+    TROJANHORSECardDamage("TROJAN HORSE"),
+    WORMDamage("WORM"),
+    VIRUSDamage("VIRUS");
 
-    //Special programming cards
-    ENERGYROUTINE("Energy Routine"),
-    SANDBOXROUTINE("Sandbox Routine", MOVE1, MOVE2, MOVE3, MOVEBACK, LEFT, RIGHT, UTURN),
-    WEASELROUTINE("Weasel Routine", LEFT, RIGHT, UTURN),
-    SPEEDROUTINE("Speed Routine", MOVE3),
-    SPAMFOLDER("Spam Folder"),
-    REPEATROUTINE("Repeat Routine", AGAIN);
-
-    final public String displayName;
+    final public String displaycard;
 
     public final List<Command> options;
 
-    Command(String displayName, Command... options) {
-        this.displayName = displayName;
+    Command(String displaycard, Command... options) {
+        this.displaycard = displaycard;
         this.options = List.of(options);
 
     }
 
-    /**
-     * Check if the command is interactive (holds 1 or more options)
-     *
-     * @return true if there is 1 or more option and false if there isn't any
-     */
-    public boolean isInteractive() {
+    public boolean isCardInteractive() {
         return !options.isEmpty();
     }
 
-    /**
-     * Get all available option for one command
-     *
-     * @return a list of all options
-     */
     public List<Command> getOptions() {
         return options;
     }
