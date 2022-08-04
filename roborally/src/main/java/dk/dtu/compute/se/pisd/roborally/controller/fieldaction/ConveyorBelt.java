@@ -46,6 +46,8 @@ public class ConveyorBelt extends FieldAction {
 
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {
+        Space numberOfMoves = gameController.board.getNeighbour(space, this.heading);
+
         if (space.getActions().size() > 0) {
             ConveyorBelt action = (ConveyorBelt) space.getActions().get(0);
             Player player = space.getPlayer();

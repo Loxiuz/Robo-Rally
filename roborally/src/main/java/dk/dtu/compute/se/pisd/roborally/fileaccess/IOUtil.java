@@ -24,7 +24,7 @@ public class IOUtil {
 
 
     // this methode uses for saving boards in Json
-    public static void writeGameJson(String saveJsonName, String json) {
+    public static String writeGameJson(String saveJsonName, String json) {
         // Saving the board template using JSON
         //class loader has responsible for loading classes.
         ClassLoader classLoader = IOUtil.class.getClassLoader();
@@ -63,6 +63,7 @@ public class IOUtil {
                 }
             }
         }
+        return jsonName;
     }
 
 

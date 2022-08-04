@@ -1,7 +1,7 @@
 package dk.dtu.compute.se.pisd.httpclient;
 
-import dk.dtu.compute.se.pisd.roborally.exceptions.IPNotValidException;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
+
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 
 import java.net.URI;
@@ -51,6 +51,7 @@ public class Client implements Client_interface {
                 .build();
         CompletableFuture<HttpResponse<String>> response =
                 HTTPclient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
         try {
             String result = response.thenApply(HttpResponse::body).get(5, HOURS);
             // Result ignorer for now
@@ -155,7 +156,7 @@ public class Client implements Client_interface {
             HttpResponse<String> responseMessage = response.get(5, SECONDS); //gets the message back from the server
             if (responseMessage.statusCode() == 404)
                 return responseMessage.body();
-            robotNumber = Integer.parseInt(responseMessage.body());
+            robotNumber = Integer .parseInt(responseMessage.body());
             serverID = id;
 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -235,14 +236,12 @@ public class Client implements Client_interface {
 
 
     // the methode goes throw the ip exception. if the ip is valid, set the ip of the server in the process
-    public void setServer(String server) throws IPNotValidException {
+    public void setServer(String server) {
         // Simple regex pattern to check for string contains ip
         Pattern pattern = Pattern.compile("");
         Matcher matcher = pattern.matcher(server);
         if (matcher.find())
             this.server = "http://" + server + ":8080";
-        else
-            throw new IPNotValidException();
     }
 
 
@@ -256,7 +255,7 @@ public class Client implements Client_interface {
     public void saveBoard(Board board) {
             System.out.println(board.getPhase());
             HttpRequest request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString(SerializeAndDeserialize.serialize(board)))
+                    .POST(HttpRequest.BodyPublishers.ofString(SaveAndLoad.serialize(board)))
                     .uri(URI.create(server +"/savegame"))
                     .setHeader("User-Agent", "Roborally Client")
                     .header("Content-Type", "application/json")

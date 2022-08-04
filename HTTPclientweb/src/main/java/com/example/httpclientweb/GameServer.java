@@ -91,6 +91,7 @@ public class GameServer {
     }
 
 
+
     @Override
     public int hashCode() {
         int result = Objects.hash(GameId, GameSituation, GameSituation, numberOfPlayers, PlayersOnBoard);

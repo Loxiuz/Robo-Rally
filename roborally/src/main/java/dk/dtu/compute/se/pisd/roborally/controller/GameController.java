@@ -27,7 +27,6 @@ import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.*;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.exceptions.MoveNotPossibleException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.BoardView;
 import javafx.application.Platform;
@@ -59,7 +58,7 @@ public class GameController {
         this.client = client;
 
         if (client != null) {
-            client.updateServerGame(SerializeAndDeserialize.serialize(board));
+            client.updateServerGame(SaveAndLoad.serialize(board));
             playerNumber = client.getRobotNumber();
             updater = new UpdateServerBoard();
             updater.setGameController(this);
@@ -410,7 +409,7 @@ public class GameController {
 
             }
             if (client != null)
-                client.updateServerGame(SerializeAndDeserialize.serialize(board));
+                client.updateServerGame(SaveAndLoad.serialize(board));
         }
     }
 
@@ -428,13 +427,12 @@ public class GameController {
         }
     }
 
-
-
-
     public void recreatePlayersView() {
         BoardView boardView = appController.getRoboRally().getBoardView();
         boardView.updatePlayersView();
     }
+
+
 
     //control robot activation on the board
     private void Activation_on_Board() {
@@ -526,7 +524,7 @@ public class GameController {
 
     public void pushGameSituation() {
         if (client != null)
-            client.updateServerGame(SerializeAndDeserialize.serialize(board));
+            client.updateServerGame(SaveAndLoad.serialize(board));
     }
 
 

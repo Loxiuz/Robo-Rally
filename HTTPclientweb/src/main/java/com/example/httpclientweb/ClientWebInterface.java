@@ -11,7 +11,9 @@ public interface ClientWebInterface {
 
     String listOfServerGames();
     String joinToServerGame(String serverToJoinGame);
+    public String loadGame();
     void leaveServerGame(String serverId, int i);
+    public void saveGame(String json);
 
 
 

@@ -28,7 +28,6 @@ import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.IOUtil;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -82,7 +81,7 @@ public class AppController implements Observer {
                 Board board = SaveAndLoad.newBoard(numPlayers, chosenBoard.get());
                 setupGameController(board);
                 if (client.isConnectedToServer())
-                    client.updateServerGame(SerializeAndDeserialize.serialize(board));
+                    client.updateServerGame(SaveAndLoad.serialize(board));
             } catch (BoardDoesNotExistException e) {
                 createNewGame(numPlayers, true);
             }
@@ -252,7 +251,7 @@ public class AppController implements Observer {
         String ResponseMessage = client.joinToAGame(id);
         if (ResponseMessage.equals("ok")) {
             serverClientMode = true;
-            Board board = SerializeAndDeserialize.deserialize(client.getGameSituation(), true);
+            Board board = SaveAndLoad.deserialize(client.getGameSituation(), true);
             setupGameController(board);
             gameController.setPlayerNumber(client.getRobotNumber());
 

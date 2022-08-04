@@ -60,14 +60,14 @@ public class GameServerController {
 
     @PostMapping("/savegame")
     public void saveGame(@RequestBody String jsonFile) {
-        SaveAndLoad gameSituation = new SaveAndLoad();
+        GameServerController gameSituation = new GameServerController();
         gameSituation.saveGame(jsonFile);
     }
 
     //retrieves a representation of the resource
     @GetMapping("/loadgame")
     public String loadGame() {
-        SaveAndLoad jsonfile = new SaveAndLoad();
+        GameServerController jsonfile = new GameServerController();
         return jsonfile.loadGame();
     }
 

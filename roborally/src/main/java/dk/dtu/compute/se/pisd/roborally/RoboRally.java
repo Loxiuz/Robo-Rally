@@ -134,12 +134,12 @@ public class RoboRally extends Application {
         );
         TableColumn PlayersOnBoard = new TableColumn("Max Players on the board");
         PlayersOnBoard.setMaxWidth(300);
-        PlayersOnBoard.setResizable(false);
+        PlayersOnBoard.setResizable(true);
         PlayersOnBoard.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Server, Integer>, ObservableValue<Integer>>)
                 p -> new ReadOnlyObjectWrapper(p.getValue().getPlayersOnBoard() )
         );
 
-        Button hostGame = new Button("Host Game");
+        Button hostGame = new Button("Hostess");
         hostGame.setOnAction(e -> {
             appController.ClientHostGame();
 
@@ -159,8 +159,7 @@ public class RoboRally extends Application {
 
         Button button = new Button("Join to a Game");
         button.setOnAction(e -> {appController.stopGame();
-            if (!ServerGameTable.getSelectionModel().isEmpty())
-                appController.ClientJoinGame(ServerGameTable.
+            appController.ClientJoinGame(ServerGameTable.
                         getSelectionModel().
                         getSelectedItem().
                         getGameId());
