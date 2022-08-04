@@ -31,10 +31,10 @@ import org.jetbrains.annotations.NotNull;
 public class ConveyorBelt extends FieldAction {
 
     private Heading heading;
-    private int numberOfMoves;
+    private int moves;
 
     public int getNumberOfMoves() {
-        return numberOfMoves;
+        return moves;
     }
 
     public Heading getHeading() {
@@ -49,13 +49,13 @@ public class ConveyorBelt extends FieldAction {
         Space numberOfMoves = gameController.board.getNeighbour(space, this.heading);
 
         if (space.getActions().size() > 0) {
-            ConveyorBelt action = (ConveyorBelt) space.getActions().get(0);
+            ConveyorBelt doAction = (ConveyorBelt) space.getActions().get(0);
             Player player = space.getPlayer();
             if (player != null) {
-                Heading playerHeading = player.getHeading();
-                player.setHeading(action.heading);
+                Heading Heading = player.getHeading();
+                player.setHeading(doAction.heading);
 
-                for (int i = 1; i <= action.numberOfMoves; i++) {
+                for (int i = 1; i <= doAction.moves; i++) {
                     if (i > 1 &&
                             player.getSpace().getActions().size() > 0 &&
                             player.getSpace().getActions().get(0) instanceof ConveyorBelt nextBelt) {
@@ -64,14 +64,14 @@ public class ConveyorBelt extends FieldAction {
 
                     Space neighbour = gameController.board.getNeighbour(player.getSpace(), player.getHeading());
                     if (neighbour != null && neighbour.getPlayer() != null) {
-                        player.setHeading(playerHeading);
+                        player.setHeading(Heading);
                         return false;
                     }
 
                     GameController.moveForward(player, 1);
                 }
 
-                player.setHeading(playerHeading);
+                player.setHeading(Heading);
             }
         } else {
             return false;

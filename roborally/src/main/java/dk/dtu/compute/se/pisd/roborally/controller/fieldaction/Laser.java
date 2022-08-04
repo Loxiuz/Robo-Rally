@@ -9,9 +9,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 public class Laser extends FieldAction {
     private Heading heading;
-    public Heading getHeading() {
-        return heading;
-    }
+
 
 
     @Override

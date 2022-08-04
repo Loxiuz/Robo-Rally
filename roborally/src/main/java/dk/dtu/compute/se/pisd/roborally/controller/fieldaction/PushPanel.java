@@ -21,13 +21,13 @@ public class PushPanel extends FieldAction {
     @Override
     public boolean doAction(GameController gameController, Space space) {
         if (space.getActions().size() > 0) {
-            PushPanel pushPanel = (PushPanel) space.getActions().get(0);
-            Heading direction = pushPanel.getHeading();
+            PushPanel pushPanelAction = (PushPanel) space.getActions().get(0);
+            Heading heading = pushPanelAction.getHeading();
 
             Player player = space.getPlayer();
             if (player != null) {
                 Heading playerHeading = player.getHeading();
-                player.setHeading(direction);
+                player.setHeading(heading);
                 GameController.moveForward(player, 1);
                 player.setHeading(playerHeading);
 
