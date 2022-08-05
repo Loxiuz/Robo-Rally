@@ -51,44 +51,13 @@ public class ConveyorBelt extends FieldAction {
             ConveyorBelt cvb = (ConveyorBelt) space.getActions().get(0);
             Player player = space.getPlayer();
             if(player != null){
-                for(int i = 0; i < cvb.getNumberOfMoves(); i++){
-                    Space target = gameController.board.getNeighbour(space, cvb.getHeading());
-                    player.setSpace(target);
-                    space = target;
-                }
+                    Heading originalHeading = player.getHeading();
+                    player.setHeading(cvb.getHeading());
+                    GameController.moveForward(player, cvb.numberOfMoves);
+                    player.setHeading(originalHeading);
                 return false;
             }
         }
-
-       /* if (space.getActions().size() > 0) {
-            ConveyorBelt action = (ConveyorBelt) space.getActions().get(0);
-            Player player = space.getPlayer();
-            if (player != null) {
-                Heading playerHeading = player.getHeading();
-                player.setHeading(action.heading);
-
-                for (int i = 1; i <= action.numberOfMoves; i++) {
-                    if (i > 1 &&
-                            player.getSpace().getActions().size() > 0 &&
-                            player.getSpace().getActions().get(0) instanceof ConveyorBelt nextBelt) {
-                        player.setHeading(nextBelt.heading);
-                    }
-
-                    Space neighbour = gameController.board.getNeighbour(player.getSpace(), player.getHeading());
-                    if (neighbour != null && neighbour.getPlayer() != null) {
-                        player.setHeading(playerHeading);
-                        return false;
-                    }
-
-                    gameController.moveForward(player, 1);
-                }
-
-                player.setHeading(playerHeading);
-            }
-        } else {
-            return false;
-        } */
-
         return true;
     }
 
