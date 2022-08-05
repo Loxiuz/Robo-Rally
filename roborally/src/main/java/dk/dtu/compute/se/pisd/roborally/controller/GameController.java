@@ -252,7 +252,6 @@ public class GameController {
         Platform.runLater(appController::stopGame);
     }
 
-
     public void Player_ChangeBoardPlayers() {
         Space antennaSpace = board.getPriorityAntennaSpace();
 
@@ -295,7 +294,7 @@ public class GameController {
     /**
      * Change the player and the step of the board
      * @param currentPlayer from current player to next player
-     * @param step
+     * @param step Step of the register.
      */
     private void changePlayer(Player currentPlayer, int step) {
         int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
@@ -319,6 +318,7 @@ public class GameController {
     /**
      * Move current player to a certain space.
      * @param space Space to be moved to.
+     * @author Malte B.
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
         if (space.board == board) {
@@ -341,12 +341,10 @@ public class GameController {
      * A player executing a command.
      * @param player The player executing the command.
      * @param command the command to be executed.
+     * @author Malte B.
      */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player.board == board && command != null) {
-            // XXX This is a very simplistic way of dealing with some basic cards and
-            //     their execution. This should eventually be done in a more elegant way
-            //     (this concerns the way cards are modelled as well as the way they are executed).
             switch (command) {
                 case MOVE1 -> moveForward(player, 1);
                 case MOVE2 -> moveForward(player, 2);
@@ -390,6 +388,7 @@ public class GameController {
      * Moves player's robot an amount spaces forward.
      * @param player Player/robot to be moved.
      * @param moves Number of moves.
+     * @author Malte B.
      */
     public static void moveForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
@@ -413,6 +412,7 @@ public class GameController {
     /**
      * Turns player's robot 90 degrees right.
      * @param player Player turning.
+     * @author Malte B.
      */
     public static void turnRight(@NotNull Player player) {
         if (player.board == board) {
@@ -423,6 +423,7 @@ public class GameController {
     /**
      * Turns player's robot degrees left.
      * @param player Player turning.
+     * @author Malte B.
      */
     public static void turnLeft(@NotNull Player player) {
         if (player.board == board) {
@@ -433,17 +434,17 @@ public class GameController {
     /**
      * Turns player's robot 180 degrees.
      * @param player Player turning.
+     * @author Malte B.
      */
     public static void uTurn(Player player) {
         turnLeft(player);
         turnLeft(player);
     }
 
-    // Control robot moves, robot move one step back
-
     /**
      * Moves player backwards.
      * @param player Player to be moved.
+     * @author Malte B.
      */
     public static void moveBackward(Player player) {
         uTurn(player);
@@ -451,12 +452,11 @@ public class GameController {
         uTurn(player);
     }
 
-    // Control robot moves, robot Movie again
-
     /**
-     *
-     * @param player
-     * @param step
+     * Executes previous command again.
+     * @param player Effected player.
+     * @param step Step of the current register.
+     * @author Christian B.
      */
     public void again(Player player, int step) {
         if (step < 1) return;
@@ -473,6 +473,7 @@ public class GameController {
     /**
      * Checks if a space is occupied by a player.
      * @param space Space to check.
+     * @author Christian B.
      */
     private static boolean isOccupied(Space space) {
         Space target = board.getSpace(space.x, space.y);
@@ -487,6 +488,7 @@ public class GameController {
 
     /**
      * Controls robot activation on the board
+     * @author Malte B.
      */
     private void Activation_on_Board() {
         List<Player> players = board.getPlayers();

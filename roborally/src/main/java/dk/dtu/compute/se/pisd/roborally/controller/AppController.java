@@ -73,6 +73,7 @@ public class AppController implements Observer {
      * Creates a new game and shows the game
      * @param numPlayers Number of players.
      * @param prevFailed
+     * @author Elias R.
      */
     private void createNewGame(int numPlayers, boolean prevFailed) {
         //Optional<String> chosenBoard = askUserWhichDefaultBoard(prevFailed);
@@ -94,6 +95,7 @@ public class AppController implements Observer {
      * Allows players to write a text dialog.
      * @param input Input from player in an array.
      * @return Returns null.
+     * @author Peter J.
      */
     public static String getInput_ServerDialog(String[] input) {
         TextInputDialog ServerDialog = new TextInputDialog();
@@ -135,6 +137,12 @@ public class AppController implements Observer {
         return dialog.showAndWait();
     }
 
+    /**
+     *
+     * @param list
+     * @return
+     * @author Peter J.
+     */
     public static Optional<String> loadBoardName(List<String> list) {
         ChoiceDialog<String> dialog = new ChoiceDialog<>(list.get(0), list);
         dialog.setTitle("Load Game");
@@ -156,6 +164,7 @@ public class AppController implements Observer {
 
     /**
      * Save game Stage and let a player write a name and  save a game
+     * @author Elias R.
      */
     public void saveGame() {
             String[] s = new String[]{"SAVE YOUR GAME", "Save your game"};
@@ -169,6 +178,7 @@ public class AppController implements Observer {
 
     /**
      * Player can load a game
+     * @author Elias R.
      */
     private void createLoadedGame() {
         Optional<String> chosenBoard = AppController.loadBoardName(IOUtil.getSavedBoardsName());
@@ -239,6 +249,7 @@ public class AppController implements Observer {
 
     /**
      * Player disconnects from the server
+     * @author Elias R.
      */
     public void Client_Disconnect_Server() {
         client.leaveTheGame();
@@ -264,6 +275,7 @@ public class AppController implements Observer {
     /**
      * Hosts game on the server and starts the game
      * @param errorMessage the relevant message
+     * @author Elias R.
      */
     public void ClientHostGame(String... errorMessage) {
         String[] HostGameDialog = new String[]{"Multiplayer game ", "Write your server Name:"};
@@ -284,6 +296,7 @@ public class AppController implements Observer {
     /**
      * Player chooses a server from server table and joins the game
      * @param id the chosen server's ID
+     * @author Elias R.
      */
     public void ClientJoinGame(String id) {
         String ResponseMessage = client.joinToAGame(id);
@@ -299,6 +312,7 @@ public class AppController implements Observer {
 
     /**
      * Player can see the available servers on the server table
+     * @author Elias R.
      */
     public void Client_ConnectToServer() {
         String serverList = client.listServerGames(); //gets the list of servers in the table
