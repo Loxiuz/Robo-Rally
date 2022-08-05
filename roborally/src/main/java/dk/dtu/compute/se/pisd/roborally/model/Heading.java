@@ -28,7 +28,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
  *
  */
 public enum Heading {
-    SOUTH, WEST, NORTH, EAST;
+    NORTH, EAST, SOUTH, WEST;
 
 
     public Heading next() {

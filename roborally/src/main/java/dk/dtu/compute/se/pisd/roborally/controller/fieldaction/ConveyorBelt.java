@@ -46,7 +46,21 @@ public class ConveyorBelt extends FieldAction {
 
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {
+
         if (space.getActions().size() > 0) {
+            ConveyorBelt cvb = (ConveyorBelt) space.getActions().get(0);
+            Player player = space.getPlayer();
+            if(player != null){
+                for(int i = 0; i < cvb.getNumberOfMoves(); i++){
+                    Space target = gameController.board.getNeighbour(space, cvb.getHeading());
+                    player.setSpace(target);
+                    space = target;
+                }
+                return false;
+            }
+        }
+
+       /* if (space.getActions().size() > 0) {
             ConveyorBelt action = (ConveyorBelt) space.getActions().get(0);
             Player player = space.getPlayer();
             if (player != null) {
@@ -73,7 +87,7 @@ public class ConveyorBelt extends FieldAction {
             }
         } else {
             return false;
-        }
+        } */
 
         return true;
     }
