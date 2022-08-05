@@ -166,7 +166,7 @@ public class RoboRally extends Application {
         });
 
         Button refresh = new Button("Refresh Connection");
-        refresh.setOnAction(e -> addClientOnServer((client.listServerGames())));
+        refresh.setOnAction(e -> addClientOnServer((client.listGamesOnServer())));
 
 
 

@@ -80,8 +80,8 @@ public class AppController implements Observer {
             try {
                 Board board = SaveAndLoad.newBoard(numPlayers, chosenBoard.get());
                 setupGameController(board);
-                if (client.isConnectedToServer())
-                    client.updateServerGame(SaveAndLoad.serialize(board));
+                if (client.isClientOnServer())
+                    client.updateGameSituation(SaveAndLoad.serialize(board));
             } catch (BoardDoesNotExistException e) {
                 createNewGame(numPlayers, true);
             }
@@ -201,7 +201,7 @@ public class AppController implements Observer {
         // If the user did not cancel, the RoboRally application will exit
         // after the option to save the game
         if (gameController == null || stopGame()) {
-            client.leaveTheGame();
+            client.leaveServer();
             Platform.exit();
         }
     }
@@ -209,7 +209,7 @@ public class AppController implements Observer {
 
     //player Disconnects from the server
     public void Client_Disconnect_Server() {
-        client.leaveTheGame();
+        client.leaveServer();
     }
 
 
@@ -261,7 +261,7 @@ public class AppController implements Observer {
 
     // player can see the available servers on the server table
     public void Client_ConnectToServer() {
-        String serverList = client.listServerGames(); //gets the list of servers in the table
+        String serverList = client.listGamesOnServer(); //gets the list of servers in the table
         if (serverList.equals("server timeout")) { //Give a massage to player if server is not reachable
             AppController.warningCase(new String[]{"error", serverList, "try again"});
             return;

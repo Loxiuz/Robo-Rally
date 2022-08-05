@@ -11,7 +11,7 @@ import javafx.application.Platform;
 public class UpdateServerBoard extends Thread {
     GameController gameController;
     Client client;
-    boolean update = true;
+    boolean updateServer = true;
     boolean runable = true;
 
     public void run() {
@@ -21,7 +21,7 @@ public class UpdateServerBoard extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if (update) {
+            if (updateServer) {
                 gameController.refreshUpdater();
                 updateBoarOnServer();
             }
@@ -49,9 +49,9 @@ public class UpdateServerBoard extends Thread {
     }
 
     public boolean getUpdate() {
-        return update;
+        return updateServer;
     }
     public void setUpdate(boolean update) {
-        this.update = update;
+        this.updateServer = update;
     }
 }
