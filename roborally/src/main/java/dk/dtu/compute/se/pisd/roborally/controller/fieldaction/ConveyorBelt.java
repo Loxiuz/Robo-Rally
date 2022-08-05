@@ -27,7 +27,9 @@ import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import org.jetbrains.annotations.NotNull;
 
-// this class controls both blue and green ConveyorBelt on the board
+/**
+ * This class controls both blue and green ConveyorBelt on the board
+ */
 public class ConveyorBelt extends FieldAction {
 
     private Heading heading;
@@ -46,7 +48,6 @@ public class ConveyorBelt extends FieldAction {
 
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {
-
         if (space.getActions().size() > 0) {
             ConveyorBelt cvb = (ConveyorBelt) space.getActions().get(0);
             Player player = space.getPlayer();
