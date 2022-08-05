@@ -166,7 +166,7 @@ public class RoboRally extends Application {
         });
 
         Button refresh = new Button("Refresh Connection");
-        refresh.setOnAction(e -> addServer(client.listServerGames()));
+        refresh.setOnAction(e -> addClientOnServer((client.listServerGames())));
 
 
 
@@ -191,10 +191,10 @@ public class RoboRally extends Application {
         primaryStage.show();
     }
 
-    public static void addServer(String s) {
-        Gson test = new Gson();
-        JsonReader jReader = new JsonReader(new StringReader(s));
-        Server[] servers = test.fromJson(jReader, Server[].class);
+    public static void addClientOnServer(String server) {
+        Gson gson = new Gson();
+        JsonReader jReader = new JsonReader(new StringReader(server));
+        Server[] servers = gson.fromJson(jReader, Server[].class);
         data.clear();
         data.addAll(servers);
     }

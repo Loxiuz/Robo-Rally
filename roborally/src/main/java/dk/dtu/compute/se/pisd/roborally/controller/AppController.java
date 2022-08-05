@@ -266,7 +266,7 @@ public class AppController implements Observer {
             AppController.warningCase(new String[]{"error", serverList, "try again"});
             return;
         }
-        RoboRally.addServer(serverList); //adds the servers to the view
+        RoboRally.addClientOnServer(serverList); //adds the servers to the view
 
     }
 }

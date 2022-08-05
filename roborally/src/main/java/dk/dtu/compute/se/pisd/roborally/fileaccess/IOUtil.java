@@ -97,13 +97,13 @@ public class IOUtil {
     // this method gets name of default boards form resources folder
     public static List<String> getBoardGameName() {
         File[] Files_list = getFilesInResources(GameBoardsJson);
-        List<String> fileNames = new ArrayList<>();
+        List<String> jsonNames = new ArrayList<>();
 
         for (File file : Files_list) {
-            fileNames.add(file.getName().replace(".json", ""));
+            jsonNames.add(file.getName().replace(".json", ""));
         }
 
-        return fileNames;
+        return jsonNames;
     }
 
 
