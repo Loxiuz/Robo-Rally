@@ -36,7 +36,7 @@ public class Checkpoint extends FieldAction {
                     gameController.Winner_Massage(space);
                     LastCheckpointNumber = 0; // Needs because the static variable is never resat
                     gameController.board.gameOver = true;
-                    gameController.pushGameSituation();
+                    gameController.createGameSituation();
                     gameController.endGame();
 
                 }

@@ -22,7 +22,7 @@ public class UpdateServerBoard extends Thread {
                 throw new RuntimeException(e);
             }
             if (updateServer) {
-                gameController.refreshUpdater();
+                gameController.NewUpdater();
                 updateBoarOnServer();
             }
         }

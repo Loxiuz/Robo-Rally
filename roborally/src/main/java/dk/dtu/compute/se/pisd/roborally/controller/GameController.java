@@ -74,7 +74,7 @@ public class GameController {
         // All this should be done for the first reload for a newly constructed board
         boolean isNewlyLoadedDefaultBoard = SaveAndLoad.getNewBoardCreated();
 
-        refreshUpdater();
+        NewUpdater();
 
         if (isNewlyLoadedDefaultBoard || !skipProgrammingPhase) {
             board.setPhase(Phase.PROGRAMMING);
@@ -125,7 +125,7 @@ public class GameController {
                 client == null) {
             makeProgramFieldsInvisible();
             makeProgramFieldsVisible(0);
-            Player_ChangeBoardPlayers();
+            BoardPlayersChange();
 
 
             board.setPhase(Phase.ACTIVATION);
@@ -133,8 +133,8 @@ public class GameController {
             board.setStep(0);
 
             if (client != null) {
-                refreshUpdater();
-                pushGameSituation();
+                NewUpdater();
+                createGameSituation();
             }
 
         } else if (client != null) {
@@ -184,7 +184,7 @@ public class GameController {
 
 
      // execute the given command before player change and the change player
-    public void execute_Command_Activation(Command command) {
+    public void executeActivation(Command command) {
         board.setPhase(Phase.ACTIVATION);
 
         Player currentPlayer = board.getCurrentPlayer();
@@ -236,12 +236,12 @@ public class GameController {
      //Ends the current game and close the game
 
     public void endGame() {
-        Platform.runLater(appController::Client_Disconnect_Server);
+        Platform.runLater(appController::ServerDisconnection);
         Platform.runLater(appController::stopGame);
     }
 
 
-    public void Player_ChangeBoardPlayers() {
+    public void BoardPlayersChange() {
         Space antennaSpace = board.getPriorityAntennaSpace();
         antennaSpace.getActions().get(0).doAction(this, antennaSpace);
 
@@ -273,7 +273,7 @@ public class GameController {
             board.setCurrentPlayer(prioritizedPlayers.get(0));
 
             if (appController != null)
-                recreatePlayersView();
+                reviewPlayersView();
         }
     }
 
@@ -286,7 +286,7 @@ public class GameController {
             board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
         } else {
             step++;
-            Activation_on_Board();
+            BoardElementActivation();
             if (step < Player.NO_REGISTERS) {
                 makeProgramFieldsVisible(step);
                 board.setStep(step);
@@ -295,8 +295,8 @@ public class GameController {
                 startProgrammingPhase();
             }
         }
-        pushGameSituation();
-        refreshUpdater();
+        createGameSituation();
+        NewUpdater();
     }
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
         if (space.board == board) {
@@ -321,18 +321,18 @@ public class GameController {
         for (int i = 0; i < moves; i++) {
             try {
                 Heading heading = player.getHeading();
-                Space target = board.getNeighbour(player.getSpace(), heading);
-                if (target == null ||
-                        (target.getActions().size() > 0 && target.getActions().get(0) instanceof PriorityAntenna))
+                Space space = board.getNeighbour(player.getSpace(), heading);
+                if (space == null ||
+                        (space.getActions().size() > 0 && space.getActions().get(0) instanceof PriorityAntenna))
                     throw new MoveNotPossibleException(player, player.getSpace(), heading);
-                if (isOccupied(target)) {
-                    Player playerBlocking = target.getPlayer();
-                    Heading targetCurrentHeading = playerBlocking.getHeading();
-                    playerBlocking.setHeading(player.getHeading());
-                    moveForward(playerBlocking, 1);
-                    playerBlocking.setHeading(targetCurrentHeading);
+                if (isOccupied(space)) {
+                    Player playerStop = space.getPlayer();
+                    Heading CurrentHeading = playerStop.getHeading();
+                    playerStop.setHeading(player.getHeading());
+                    moveForward(playerStop, 1);
+                    playerStop.setHeading(CurrentHeading);
                 }
-                target.setPlayer(player);
+                space.setPlayer(player);
             } catch (MoveNotPossibleException e) {
 
             }
@@ -351,11 +351,11 @@ public class GameController {
     // Control robot moves, robot Movie again
     public void again(Player player, int step) {
         if (step < 1) return;
-        Command prevCommand = player.getProgramField(step - 1).getCard().command;
-        if (prevCommand == AGAIN)
+        Command Commandagain = player.getProgramField(step - 1).getCard().command;
+        if (Commandagain == AGAIN)
             again(player, step - 1);
         else {
-            player.getProgramField(step).setCard(new CommandCard(prevCommand));
+            player.getProgramField(step).setCard(new CommandCard(Commandagain));
             executeNextStep();
             player.getProgramField(step).setCard(new CommandCard(AGAIN));
         }
@@ -401,7 +401,7 @@ public class GameController {
                 case LEFT -> turnLeft(player);
                 case MOVEBACK ->moveBackward(player);
                 case AGAIN->again(player, board.getStep());
-                case SPAMDamge -> removeSpamCard(player);
+                case SPAMDamge -> removeSpam(player);
                 case OPTION_LEFT_RIGHT -> board.setPhase(Phase.PLAYER_INTERACTION);
                 case UTURN -> uTurn(player);
 
@@ -416,19 +416,19 @@ public class GameController {
 
      //Move one card from the command felt to the programming felt
 
-    public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
-        CommandCard sourceCard = source.getCard();
+    public boolean moveCards(@NotNull CommandCardField randomcard, @NotNull CommandCardField target) {
+        CommandCard randomcardCard = randomcard.getCard();
         CommandCard targetCard = target.getCard();
-        if (sourceCard != null && targetCard == null) {
-            target.setCard(sourceCard);
-            source.setCard(null);
+        if (randomcardCard != null && targetCard == null) {
+            target.setCard(randomcardCard);
+            randomcard.setCard(null);
             return true;
         } else {
             return false;
         }
     }
 
-    public void recreatePlayersView() {
+    public void reviewPlayersView() {
         BoardView boardView = appController.getRoboRally().getBoardView();
         boardView.updatePlayersView();
     }
@@ -436,35 +436,35 @@ public class GameController {
 
 
     //control robot activation on the board
-    private void Activation_on_Board() {
+    private void BoardElementActivation() {
         List<Player> players = board.getPlayers();
-        ArrayDeque<Player> actionsToBeHandled = new ArrayDeque<>(board.getPlayersNumber());
+        ArrayDeque<Player> BoardElementAction = new ArrayDeque<>(board.getPlayersNumber());
 
         for (int i = 2; i > 0; i--) {
             for (Player player : players) {
                 if (!player.getSpace().getActions().isEmpty() &&
                         player.getSpace().getActions().get(0) instanceof ConveyorBelt spaceBelt &&
                         (spaceBelt.getNumberOfMoves() == i)) { //check if the space have an action
-                    actionsToBeHandled.add(player);
+                    BoardElementAction.add(player);
                 }
             }
-            int playersInQueue = actionsToBeHandled.size();
+            int playersInQueue = BoardElementAction.size();
             int j = 0;
-            while (!actionsToBeHandled.isEmpty()) {
-                Player currentPlayer = actionsToBeHandled.pop();
+            while (!BoardElementAction.isEmpty()) {
+                Player currentPlayer = BoardElementAction.pop();
                 Space startLocation = currentPlayer.getSpace();
                 if (!currentPlayer.getSpace().getActions().get(0).doAction(this, currentPlayer.getSpace())) {
                     currentPlayer.setSpace(startLocation);
-                    actionsToBeHandled.add(currentPlayer);
+                    BoardElementAction.add(currentPlayer);
                 }
                 j++;
                 if (j == playersInQueue)
-                    if (playersInQueue == actionsToBeHandled.size()) {
-                        actionsToBeHandled.clear();
+                    if (playersInQueue == BoardElementAction.size()) {
+                        BoardElementAction.clear();
                         break;
                     } else {
                         j = 0;
-                        playersInQueue = actionsToBeHandled.size();
+                        playersInQueue = BoardElementAction.size();
                     }
             }
         }
@@ -511,9 +511,9 @@ public class GameController {
     //this method update the board when a not active player are polling and
     //and players taking their turn are not pulling.
 
-        public void refreshUpdater() {
+        public void NewUpdater() {
             if (client != null) {
-                updater.setUpdate(isMyTurn());
+                updater.setUpdate(playerTurn());
 
                 if (board.gameOver) endGame(); // Needed to ensure it closes
             }
@@ -525,7 +525,7 @@ public class GameController {
 
      // Pushes the current game state to the connected server id
 
-    public void pushGameSituation() {
+    public void createGameSituation() {
         if (client != null)
             client.updateGameSituation(SaveAndLoad.serialize(board));
     }
@@ -534,7 +534,7 @@ public class GameController {
       //Checks if a player connected to an online game has his/hers turn
      // this is determined by their id given from the server
 
-    public boolean isMyTurn() {
+    public boolean playerTurn() {
         return board.getCurrentPlayer() != board.getPlayer(playerNumber) && client != null;
 
     }
@@ -547,7 +547,7 @@ public class GameController {
         return playerNumber;
     }
 
-    private void removeSpamCard(Player player) {
+    private void removeSpam(Player player) {
         player.getDamagecards().remove(Command.SPAMDamge);
     }
 

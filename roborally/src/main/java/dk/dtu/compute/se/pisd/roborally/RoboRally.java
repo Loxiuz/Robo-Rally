@@ -145,15 +145,15 @@ public class RoboRally extends Application {
 
 
         });
-        Button connect_to_server = new Button("Connect to Server");
+        Button connect_to_server = new Button("Server Connection");
         connect_to_server.setOnAction(e -> {
-            appController.Client_ConnectToServer();
+            appController.ConnectClientToServer();
 
         });
 
-        Button Disconnect_from_server = new Button("Disconnect from Server");
+        Button Disconnect_from_server = new Button("Server Disconnection");
         Disconnect_from_server.setOnAction(e -> {
-            appController.Client_ConnectToServer();
+            appController.ConnectClientToServer();
 
         });
 
@@ -165,7 +165,7 @@ public class RoboRally extends Application {
                         getGameId());
         });
 
-        Button refresh = new Button("Refresh Connection");
+        Button refresh = new Button("Refresh Server");
         refresh.setOnAction(e -> addClientOnServer((client.listGamesOnServer())));
 
 
