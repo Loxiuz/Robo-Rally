@@ -401,10 +401,7 @@ public class GameController {
                     throw new MoveNotPossibleException(player, player.getSpace(), heading);
                 if (isOccupied(target)) {
                     Player playerBlocking = target.getPlayer();
-                    Heading targetCurrentHeading = playerBlocking.getHeading();
-                    playerBlocking.setHeading(player.getHeading());
-                    moveForward(playerBlocking, 1);
-                    playerBlocking.setHeading(targetCurrentHeading);
+                    playerBlocking.setSpace(board.getNeighbour(target,heading));
                 }
                 target.setPlayer(player);
             } catch (MoveNotPossibleException e) {
