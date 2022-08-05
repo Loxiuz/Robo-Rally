@@ -27,7 +27,7 @@ import dk.dtu.compute.se.pisd.httpclient.Client;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.exceptions.BoardDoesNotExistException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.IOUtil;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -35,7 +35,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +48,7 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
     private GameController gameController;
     private final Client client = new Client();
-    private boolean serverClientMode = false;
+    private boolean server_Client = false;
 
 
     public AppController(@NotNull RoboRally roboRally) {
@@ -71,22 +70,22 @@ public class AppController implements Observer {
 
     /**
      * Creates a new game and shows the game
-     * @param numPlayers Number of players.
+     * @param numberofPlayers Number of players.
      * @param prevFailed
      * @author Elias R.
      */
-    private void createNewGame(int numPlayers, boolean prevFailed) {
+    private void createNewGame(int numberofPlayers, boolean prevFailed) {
         //Optional<String> chosenBoard = askUserWhichDefaultBoard(prevFailed);
 
-        Optional<String> chosenBoard = AppController.ChooseBoardName(IOUtil.getBoardGameName());
-        if (chosenBoard.isPresent()) {
+        Optional<String> chosenBoardGame = AppController.ChooseBoardGame(IOUtil.getBoardGameName());
+        if (chosenBoardGame.isPresent()) {
             try {
-                Board board = SaveAndLoad.newBoard(numPlayers, chosenBoard.get());
+                Board board = SaveAndLoad.newBoard(numberofPlayers, chosenBoardGame.get());
                 setupGameController(board);
-                if (client.isConnectedToServer())
-                    client.updateServerGame(SerializeAndDeserialize.serialize(board));
+                if (client.isClientOnServer())
+                    client.updateGameSituation(SaveAndLoad.serialize(board));
             } catch (BoardDoesNotExistException e) {
-                createNewGame(numPlayers, true);
+                createNewGame(numberofPlayers, true);
             }
         }
     }
@@ -97,7 +96,7 @@ public class AppController implements Observer {
      * @return Returns null.
      * @author Peter J.
      */
-    public static String getInput_ServerDialog(String[] input) {
+    public static String ServerDialog(String[] input) {
         TextInputDialog ServerDialog = new TextInputDialog();
         ServerDialog.setTitle(input[0]);
         ServerDialog.setHeaderText(input[1]);
@@ -129,7 +128,7 @@ public class AppController implements Observer {
      * @param list List of saved boards.
      * @return Returns dialog and waits for input.
      */
-    public static Optional<String> ChooseBoardName(List<String> list) {
+    public static Optional<String> ChooseBoardGame(List<String> list) {
         ChoiceDialog<String> dialog = new ChoiceDialog<>(list.get(0), list);
         dialog.setTitle("CHOOSE BOARD");
         dialog.setHeaderText("Select a board to play");
@@ -155,7 +154,7 @@ public class AppController implements Observer {
      * @param input A string to be shown as a warning
      * @return Returns and waits.
      */
-    public static Optional<ButtonType> warningCase(String[] input) {
+    public static Optional<ButtonType> warningDialog(String[] input) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(input[0]);
         alert.setContentText(input[1]);
@@ -168,10 +167,10 @@ public class AppController implements Observer {
      */
     public void saveGame() {
             String[] s = new String[]{"SAVE YOUR GAME", "Save your game"};
-            String dialog = AppController.getInput_ServerDialog(s);
+            String SaveGamedialog = AppController.ServerDialog(s);
 
-            if (dialog != null)
-                SaveAndLoad.SaveBoardGame(gameController.board, dialog);
+            if (SaveGamedialog != null)
+                SaveAndLoad.SaveBoardGame(gameController.board, SaveGamedialog);
         }
 
     //
@@ -180,26 +179,25 @@ public class AppController implements Observer {
      * Player can load a game
      * @author Elias R.
      */
-    private void createLoadedGame() {
-        Optional<String> chosenBoard = AppController.loadBoardName(IOUtil.getSavedBoardsName());
-
-        if (chosenBoard.isPresent()) {
+    private void LoadGameBoard() {
+        Optional<String> choseeBoardGame = AppController.loadBoardName(IOUtil.getSavedBoardsName());
+        if (choseeBoardGame.isPresent()) {
             try {
-                if ("Name".equals(chosenBoard.get())) {
+                if ("Name".equals(choseeBoardGame.get())) {
                     System.out.println("Is the same");
                 }
 
-                Board board = SaveAndLoad.loadBoardGame(chosenBoard.get());
+                Board board = SaveAndLoad.loadBoardGame(choseeBoardGame.get());
                 setupGameController(board);
             } catch (BoardDoesNotExistException e) {
-                createLoadedGame();
+                LoadGameBoard();
             }
         }
     }
 
     public void loadGame() {
         if (gameController == null) {
-            createLoadedGame();
+            LoadGameBoard();
         }
     }
 
@@ -209,7 +207,7 @@ public class AppController implements Observer {
      * @param board Selected board to be used.
      */
     private void setupGameController(Board board) {
-        gameController = new GameController(this, Objects.requireNonNull(board), serverClientMode ? client : null);
+        gameController = new GameController(this, Objects.requireNonNull(board), server_Client ? client : null);
         board.setCurrentPlayer(board.getPlayer(0));
         gameController.startProgrammingPhase();
         roboRally.createBoardView(gameController);
@@ -232,7 +230,7 @@ public class AppController implements Observer {
     public void exitGame() {
         if (gameController != null) {
             String[] s = new String[]{"Exit RoboRally?", "Are you sure you want to exit RoboRally?"};
-            Optional<ButtonType> result = AppController.warningCase(s);
+            Optional<ButtonType> result = AppController.warningDialog(s);
 
             if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
@@ -242,7 +240,7 @@ public class AppController implements Observer {
         // If the user did not cancel, the RoboRally application will exit
         // after the option to save the game
         if (gameController == null || stopGame()) {
-            client.leaveTheGame();
+            client.leaveServer();
             Platform.exit();
         }
     }
@@ -251,15 +249,15 @@ public class AppController implements Observer {
      * Player disconnects from the server
      * @author Elias R.
      */
-    public void Client_Disconnect_Server() {
-        client.leaveTheGame();
+    public void ServerDisconnection() {
+        client.leaveServer();
     }
 
     /**
      * Checks if the game is running or not
      * @return Returns true if game is running.
      */
-    public boolean isGameRunning() {
+    public boolean isGamepresent() {
         return gameController != null;
     }
 
@@ -277,18 +275,18 @@ public class AppController implements Observer {
      * @param errorMessage the relevant message
      * @author Elias R.
      */
-    public void ClientHostGame(String... errorMessage) {
+    public void ClientHostGame(String... ResponseMassage) {
         String[] HostGameDialog = new String[]{"Multiplayer game ", "Write your server Name:"};
-        if (errorMessage.length != 0)
-            HostGameDialog[1] = errorMessage[0] + "\n Try again";
-        String result = AppController.getInput_ServerDialog(HostGameDialog);
-        if (result == null)
+        if (ResponseMassage.length != 0)
+            HostGameDialog[1] = ResponseMassage[0] + "\n Try again";
+        String state = AppController.ServerDialog(HostGameDialog);
+        if (state == null)
             return;
-        String response = client.hostServerGame(result);
-        if (!Objects.equals(response, "success"))
-            ClientHostGame(response);
+        String Serverresponse = client.hostServerGame(state);
+        if (!Objects.equals(Serverresponse, "success"))
+            ClientHostGame(Serverresponse);
         else {
-            serverClientMode = true;
+            server_Client = true;
             newGame();
         }
     }
@@ -301,26 +299,25 @@ public class AppController implements Observer {
     public void ClientJoinGame(String id) {
         String ResponseMessage = client.joinToAGame(id);
         if (ResponseMessage.equals("ok")) {
-            serverClientMode = true;
-            Board board = SerializeAndDeserialize.deserialize(client.getGameSituation(), true);
+            server_Client = true;
+            Board board = SaveAndLoad.deserialize(client.getGameSituation(), true);
             setupGameController(board);
             gameController.setPlayerNumber(client.getRobotNumber());
 
-        } else
-        AppController.warningCase(new String[]{"Error", ResponseMessage, "refresh the Server and try again"});
+        }
     }
 
     /**
      * Player can see the available servers on the server table
      * @author Elias R.
      */
-    public void Client_ConnectToServer() {
-        String serverList = client.listServerGames(); //gets the list of servers in the table
-        if (serverList.equals("server timeout")) { //Give a massage to player if server is not reachable
-            AppController.warningCase(new String[]{"error", serverList, "try again"});
+    public void ConnectClientToServer() {
+        String ListOfServer = client.listGamesOnServer(); //gets the list of servers in the table
+        if (ListOfServer.equals("server timeout")) { //Give a massage to player if server is not reachable
+            AppController.warningDialog(new String[]{"error", ListOfServer, "try again"});
             return;
         }
-        RoboRally.addServer(serverList); //adds the servers to the view
+        RoboRally.addClientOnServer(ListOfServer); //adds the servers to the view
 
     }
 }

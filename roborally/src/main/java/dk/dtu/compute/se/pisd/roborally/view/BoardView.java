@@ -111,7 +111,7 @@ public class BoardView extends VBox implements ViewObserver {
             Object source = event.getSource();
             if (source instanceof SpaceView spaceView) {
                 //SpaceView spaceView = (SpaceView) source;
-                Space space = spaceView.space;
+                Space space = spaceView.spaceview;
                 Board board = space.board;
                 if (board == gameController.board) {
                     gameController.moveCurrentPlayerToSpace(space);

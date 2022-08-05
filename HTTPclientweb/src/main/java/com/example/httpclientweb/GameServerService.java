@@ -18,6 +18,7 @@ import java.util.Objects;
 public class GameServerService implements ClientWebInterface {
     ArrayList<GameServer> gameServers = new ArrayList<>();
     private int GameID = 0;
+    String jsonFilePath = "roborally/target/classes/SaveGames";
 
 
   //Update the id and game state on the server
@@ -41,6 +42,21 @@ public class GameServerService implements ClientWebInterface {
         return String.valueOf(gameserver.getRobot());
     }
 
+    @Override
+    public String loadGame() {
+        Gson gsonFileReader = new Gson();
+        JsonObject json = null;
+        try {
+            Reader jsonFileReader = Files.newBufferedReader(Paths.get(jsonFilePath));
+            json = gsonFileReader.fromJson(jsonFileReader, JsonObject.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+
 
     @Override
     public void leaveServerGame(String serverGameId, int robot) {
@@ -50,6 +66,18 @@ public class GameServerService implements ClientWebInterface {
         gameserver.removePlayerFromServer();
         if (gameserver.ServerisEmpty())
             gameServers.remove(gameserver);
+    }
+
+    @Override
+    public void saveGame(String json) {
+        try {
+
+            FileWriter jsonWriter = new FileWriter(jsonFilePath);
+            jsonWriter.write(json);
+            jsonWriter.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // get game situation from the server and return it in jason file

@@ -10,14 +10,14 @@ import dk.dtu.compute.se.pisd.roborally.model.Board;
  */
 public interface Client_interface {
 
-    String hostServerGame(String title);
-    String listServerGames();
+    String hostServerGame(String ServerName);
+    String listGamesOnServer();
     String joinToAGame(String serverToJoin);
 
 
     String getGameSituation();
-    void updateServerGame(String gameState);
-    void leaveTheGame();
+    void updateGameSituation(String gameState);
+    void leaveServer();
     String loadGame();
     public void saveBoard(Board board);
 

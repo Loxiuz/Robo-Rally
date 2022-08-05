@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// Do a specific path in resources folder , read and write serialized boards from the file
+//
+// Do a specific path in resources folder , read and write serialized boards from the json file
 public class IOUtil {
     private static final String SaveGames = "SaveGames";
     private static final String GameBoardsJson = "GameBoardsJson";
@@ -23,7 +24,7 @@ public class IOUtil {
 
 
     // this methode uses for saving boards in Json
-    public static void writeGameJson(String saveJsonName, String json) {
+    public static String writeGameJson(String saveJsonName, String json) {
         // Saving the board template using JSON
         //class loader has responsible for loading classes.
         ClassLoader classLoader = IOUtil.class.getClassLoader();
@@ -62,6 +63,7 @@ public class IOUtil {
                 }
             }
         }
+        return jsonName;
     }
 
 
@@ -95,13 +97,13 @@ public class IOUtil {
     // this method gets name of default boards form resources folder
     public static List<String> getBoardGameName() {
         File[] Files_list = getFilesInResources(GameBoardsJson);
-        List<String> fileNames = new ArrayList<>();
+        List<String> jsonNames = new ArrayList<>();
 
         for (File file : Files_list) {
-            fileNames.add(file.getName().replace(".json", ""));
+            jsonNames.add(file.getName().replace(".json", ""));
         }
 
-        return fileNames;
+        return jsonNames;
     }
 
 

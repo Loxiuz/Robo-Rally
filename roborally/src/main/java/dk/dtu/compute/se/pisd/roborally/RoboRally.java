@@ -134,40 +134,39 @@ public class RoboRally extends Application {
         );
         TableColumn PlayersOnBoard = new TableColumn("Max Players on the board");
         PlayersOnBoard.setMaxWidth(300);
-        PlayersOnBoard.setResizable(false);
+        PlayersOnBoard.setResizable(true);
         PlayersOnBoard.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Server, Integer>, ObservableValue<Integer>>)
                 p -> new ReadOnlyObjectWrapper(p.getValue().getPlayersOnBoard() )
         );
 
-        Button hostGame = new Button("Host Game");
+        Button hostGame = new Button("Hostess");
         hostGame.setOnAction(e -> {
             appController.ClientHostGame();
 
 
         });
-        Button connect_to_server = new Button("Connect to Server");
+        Button connect_to_server = new Button("Server Connection");
         connect_to_server.setOnAction(e -> {
-            appController.Client_ConnectToServer();
+            appController.ConnectClientToServer();
 
         });
 
-        Button Disconnect_from_server = new Button("Disconnect from Server");
+        Button Disconnect_from_server = new Button("Server Disconnection");
         Disconnect_from_server.setOnAction(e -> {
-            appController.Client_ConnectToServer();
+            appController.ConnectClientToServer();
 
         });
 
         Button button = new Button("Join to a Game");
         button.setOnAction(e -> {appController.stopGame();
-            if (!ServerGameTable.getSelectionModel().isEmpty())
-                appController.ClientJoinGame(ServerGameTable.
+            appController.ClientJoinGame(ServerGameTable.
                         getSelectionModel().
                         getSelectedItem().
                         getGameId());
         });
 
-        Button refresh = new Button("Refresh Connection");
-        refresh.setOnAction(e -> addServer(client.listServerGames()));
+        Button refresh = new Button("Refresh Server");
+        refresh.setOnAction(e -> addClientOnServer((client.listGamesOnServer())));
 
 
 
@@ -192,10 +191,10 @@ public class RoboRally extends Application {
         primaryStage.show();
     }
 
-    public static void addServer(String s) {
-        Gson test = new Gson();
-        JsonReader jReader = new JsonReader(new StringReader(s));
-        Server[] servers = test.fromJson(jReader, Server[].class);
+    public static void addClientOnServer(String server) {
+        Gson gson = new Gson();
+        JsonReader jReader = new JsonReader(new StringReader(server));
+        Server[] servers = gson.fromJson(jReader, Server[].class);
         data.clear();
         data.addAll(servers);
     }

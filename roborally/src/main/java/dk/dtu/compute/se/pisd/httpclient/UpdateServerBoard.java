@@ -1,7 +1,7 @@
-package dk.dtu.compute.se.pisd.roborally.controller;
+package dk.dtu.compute.se.pisd.httpclient;
 
-import dk.dtu.compute.se.pisd.httpclient.Client;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import javafx.application.Platform;
 
 
@@ -13,7 +13,7 @@ import javafx.application.Platform;
 public class UpdateServerBoard extends Thread {
     GameController gameController;
     Client client;
-    boolean update = true;
+    boolean updateServer = true;
     boolean runable = true;
 
     public void run() {
@@ -23,8 +23,8 @@ public class UpdateServerBoard extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if (update) {
-                gameController.refreshUpdater();
+            if (updateServer) {
+                gameController.NewUpdater();
                 updateBoarOnServer();
             }
         }
@@ -32,7 +32,7 @@ public class UpdateServerBoard extends Thread {
 
     public void updateBoarOnServer() {
         if (!gameController.board.gameOver) {
-            gameController.board = SerializeAndDeserialize.deserialize(client.getGameSituation(), true);
+            gameController.board = SaveAndLoad.deserialize(client.getGameSituation(), true);
             Platform.runLater(gameController::updateBoard);
         }
     }
@@ -51,9 +51,9 @@ public class UpdateServerBoard extends Thread {
     }
 
     public boolean getUpdate() {
-        return update;
+        return updateServer;
     }
     public void setUpdate(boolean update) {
-        this.update = update;
+        this.updateServer = update;
     }
 }

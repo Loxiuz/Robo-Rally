@@ -11,33 +11,31 @@ import dk.dtu.compute.se.pisd.roborally.model.Space;
  */
 public class Pit extends FieldAction {
     public int boardNum;
-    RebootToken reboot = new RebootToken();
+    RebootToken reboottoken = new RebootToken();
     @Override
     public boolean doAction(GameController gameController, Space space) {
-        Pit pit = (Pit) space.getActions().get(0);
+        Pit pitAction = (Pit) space.getActions().get(0);
         Board board = gameController.board;
 
         if (space.getActions().size() > 0) {
             Player player = space.getPlayer();
 
             if (player != null) {
-                switch (pit.boardNum) {
+                switch (pitAction.boardNum) {
                     case 1:
 
-                        board.getSpace(0,6).setPlayer(player);
-                        reboot.doAction(gameController, player.getSpace());
-                        player.setDmgcards(Command.SPAM);
-                        player.setDmgcards(Command.SPAM);
+                        board.getSpace(7,0).setPlayer(player);
+                        reboottoken.doAction(gameController, player.getSpace());
+                        player.setDamagecards(Command.SPAMDamge);
+                        player.setDamagecards(Command.SPAMDamge);
                         break;
 
                     case 2:
-                        board.getSpace(0,4).setPlayer(player);
-                        reboot.doAction(gameController, player.getSpace());
-                        player.setDmgcards(Command.SPAM);
-                        player.setDmgcards(Command.SPAM);
+                        board.getSpace(4,0).setPlayer(player);
+                        reboottoken.doAction(gameController, player.getSpace());
+                        player.setDamagecards(Command.SPAMDamge);
+                        player.setDamagecards(Command.SPAMDamge);
                         break;
-
-
 
                 }
             }

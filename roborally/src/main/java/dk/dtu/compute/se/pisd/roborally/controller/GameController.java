@@ -22,10 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.httpclient.Client;
+import dk.dtu.compute.se.pisd.httpclient.UpdateServerBoard;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.*;
 import dk.dtu.compute.se.pisd.roborally.controller.fieldaction.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.exceptions.MoveNotPossibleException;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.SerializeAndDeserialize;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.SaveAndLoad;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.BoardView;
 import javafx.application.Platform;
@@ -60,7 +61,7 @@ public class GameController {
         this.client = client;
 
         if (client != null) {
-            client.updateServerGame(SerializeAndDeserialize.serialize(board));
+            client.updateGameSituation(SaveAndLoad.serialize(board));
             playerNumber = client.getRobotNumber();
             updater = new UpdateServerBoard();
             updater.setGameController(this);
@@ -79,7 +80,7 @@ public class GameController {
         // All this should be done for the first reload for a newly constructed board
         boolean isNewlyLoadedDefaultBoard = SaveAndLoad.getNewBoardCreated();
 
-        refreshUpdater();
+        NewUpdater();
 
         if (isNewlyLoadedDefaultBoard || !skipProgrammingPhase) {
             board.setPhase(Phase.PROGRAMMING);
@@ -97,9 +98,9 @@ public class GameController {
 
                     for (int j = 0; j < Player.NO_CARDS; j++) {
                         CommandCardField field = player.getCardField(j);
-                        if (!player.getDmgcards().isEmpty()) {
-                            if (player.getDmgcards().size() > j) {
-                                field.setCard(new CommandCard(player.getDmgcards().get(j)));
+                        if (!player.getDamagecards().isEmpty()) {
+                            if (player.getDamagecards().size() > j) {
+                                field.setCard(new CommandCard(player.getDamagecards().get(j)));
                             } else
                                 field.setCard(generateRandomCommandCard());
                         } else
@@ -133,7 +134,7 @@ public class GameController {
                 client == null) {
             makeProgramFieldsInvisible();
             makeProgramFieldsVisible(0);
-            Player_ChangeBoardPlayers();
+            BoardPlayersChange();
 
 
             board.setPhase(Phase.ACTIVATION);
@@ -141,8 +142,8 @@ public class GameController {
             board.setStep(0);
 
             if (client != null) {
-                refreshUpdater();
-                pushGameSituation();
+                NewUpdater();
+                createGameSituation();
             }
 
         } else if (client != null) {
@@ -197,7 +198,7 @@ public class GameController {
      * Execute command before player change.
      * @param command Command to be executed.
      */
-    public void execute_Command_Activation(Command command) {
+    public void executeActivation(Command command) {
         board.setPhase(Phase.ACTIVATION);
 
         Player currentPlayer = board.getCurrentPlayer();
@@ -211,6 +212,7 @@ public class GameController {
     public void updateBoard() {
         appController.getRoboRally().createBoardView(this);
     }
+
 
     private void continuePrograms() {
         do {
@@ -248,16 +250,14 @@ public class GameController {
      * Ends the current game and close the game
      */
     public void endGame() {
-        Platform.runLater(appController::Client_Disconnect_Server);
+        Platform.runLater(appController::ServerDisconnection);
         Platform.runLater(appController::stopGame);
     }
 
-    public void Player_ChangeBoardPlayers() {
-        Space antennaSpace = board.getPriorityAntennaSpace();
 
-        if(antennaSpace.getActions().size() != 0){
-            antennaSpace.getActions().get(0).doAction(this, antennaSpace);
-        }
+    public void BoardPlayersChange() {
+        Space antennaSpace = board.getPriorityAntennaSpace();
+        antennaSpace.getActions().get(0).doAction(this, antennaSpace);
 
         // To avoid sync bug when playing online
         if (client == null) {
@@ -287,8 +287,13 @@ public class GameController {
             board.setCurrentPlayer(prioritizedPlayers.get(0));
 
             if (appController != null)
-                recreatePlayersView();
+                reviewPlayersView();
         }
+    }
+
+    public void reviewPlayersView() {
+        BoardView boardView = appController.getRoboRally().getBoardView();
+        boardView.updatePlayersView();
     }
 
     /**
@@ -302,7 +307,7 @@ public class GameController {
             board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
         } else {
             step++;
-            Activation_on_Board();
+            BoardElementActivation();
             if (step < Player.NO_REGISTERS) {
                 makeProgramFieldsVisible(step);
                 board.setStep(step);
@@ -311,8 +316,8 @@ public class GameController {
                 startProgrammingPhase();
             }
         }
-        pushGameSituation();
-        refreshUpdater();
+        createGameSituation();
+        NewUpdater();
     }
 
     /**
@@ -345,16 +350,19 @@ public class GameController {
      */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player.board == board && command != null) {
+            // XXX This is a very simplistic way of dealing with some basic cards and
+            //     their execution. This should eventually be done in a more elegant way
+            //     (this concerns the way cards are modelled as well as the way they are executed).
             switch (command) {
-                case MOVE1 -> moveForward(player, 1);
+                case MOVE1 ->moveForward(player, 1);
                 case MOVE2 -> moveForward(player, 2);
-                case MOVE3, SPEEDROUTINE -> moveForward(player, 3);
+                case MOVE3->moveForward(player, 3);
                 case RIGHT -> turnRight(player);
                 case LEFT -> turnLeft(player);
-                case MOVEBACK -> moveBackward(player);
-                case AGAIN, REPEATROUTINE -> again(player, board.getStep());
-                case SPAM -> removeSpamCard(player);
-                case OPTION_LEFT_RIGHT, SANDBOXROUTINE, WEASELROUTINE -> board.setPhase(Phase.PLAYER_INTERACTION);
+                case MOVEBACK ->moveBackward(player);
+                case AGAIN->again(player, board.getStep());
+                case SPAMDamge -> removeSpam(player);
+                case OPTION_LEFT_RIGHT -> board.setPhase(Phase.PLAYER_INTERACTION);
                 case UTURN -> uTurn(player);
 
                 default -> {
@@ -362,7 +370,7 @@ public class GameController {
 
             }
             if (client != null)
-                client.updateServerGame(SerializeAndDeserialize.serialize(board));
+                client.updateGameSituation(SaveAndLoad.serialize(board));
         }
     }
 
@@ -460,11 +468,11 @@ public class GameController {
      */
     public void again(Player player, int step) {
         if (step < 1) return;
-        Command prevCommand = player.getProgramField(step - 1).getCard().command;
-        if (prevCommand == AGAIN)
+        Command Commandagain = player.getProgramField(step - 1).getCard().command;
+        if (Commandagain == AGAIN)
             again(player, step - 1);
         else {
-            player.getProgramField(step).setCard(new CommandCard(prevCommand));
+            player.getProgramField(step).setCard(new CommandCard(Commandagain));
             executeNextStep();
             player.getProgramField(step).setCard(new CommandCard(AGAIN));
         }
@@ -486,39 +494,40 @@ public class GameController {
     }
 
 
+
     /**
      * Controls robot activation on the board
      * @author Malte B.
      */
-    private void Activation_on_Board() {
+    private void BoardElementActivation() {
         List<Player> players = board.getPlayers();
-        ArrayDeque<Player> actionsToBeHandled = new ArrayDeque<>(board.getPlayersNumber());
+        ArrayDeque<Player> BoardElementAction = new ArrayDeque<>(board.getPlayersNumber());
 
         for (int i = 2; i > 0; i--) {
             for (Player player : players) {
                 if (!player.getSpace().getActions().isEmpty() &&
                         player.getSpace().getActions().get(0) instanceof ConveyorBelt spaceBelt &&
                         (spaceBelt.getNumberOfMoves() == i)) { //check if the space have an action
-                    actionsToBeHandled.add(player);
+                    BoardElementAction.add(player);
                 }
             }
-            int playersInQueue = actionsToBeHandled.size();
+            int playersInQueue = BoardElementAction.size();
             int j = 0;
-            while (!actionsToBeHandled.isEmpty()) {
-                Player currentPlayer = actionsToBeHandled.pop();
+            while (!BoardElementAction.isEmpty()) {
+                Player currentPlayer = BoardElementAction.pop();
                 Space startLocation = currentPlayer.getSpace();
                 if (!currentPlayer.getSpace().getActions().get(0).doAction(this, currentPlayer.getSpace())) {
                     currentPlayer.setSpace(startLocation);
-                    actionsToBeHandled.add(currentPlayer);
+                    BoardElementAction.add(currentPlayer);
                 }
                 j++;
                 if (j == playersInQueue)
-                    if (playersInQueue == actionsToBeHandled.size()) {
-                        actionsToBeHandled.clear();
+                    if (playersInQueue == BoardElementAction.size()) {
+                        BoardElementAction.clear();
                         break;
                     } else {
                         j = 0;
-                        playersInQueue = actionsToBeHandled.size();
+                        playersInQueue = BoardElementAction.size();
                     }
             }
         }
@@ -544,12 +553,14 @@ public class GameController {
                     player.getSpace().getActions().get(0) instanceof RebootToken)
                 player.getSpace().getActions().get(0).doAction(this, player.getSpace());
         }
+
         //activate Pit
         for (Player player : players) {
             if (!player.getSpace().getActions().isEmpty() &&
-                    player.getSpace().getActions().get(0) instanceof Pit)
+                    player.getSpace().getActions().get(0) instanceof Pit){
                 player.getSpace().getActions().get(0).doAction(this, player.getSpace());
-        }
+
+        }}
 
 
         //activate checkpoints
@@ -564,12 +575,14 @@ public class GameController {
      * Updates the board when a non-active player are pulling
      * and players taking their turn are not pulling.
      */
-    public void refreshUpdater() {
-        if (client != null) {
-            updater.setUpdate(isMyTurn());
-            if (board.gameOver) endGame(); // Needed to ensure it closes
-        }
-        if (board.gameOver)
+        public void NewUpdater() {
+            if (client != null) {
+                updater.setUpdate(playerTurn());
+
+                if (board.gameOver) endGame(); // Needed to ensure it closes
+            }
+
+            if (board.gameOver)
                 updater.setUpdate(false);
         }
 
@@ -577,17 +590,18 @@ public class GameController {
     /**
      * Pushes the current game state to the connected server id
      */
-    public void pushGameSituation() {
+    public void createGameSituation() {
         if (client != null)
-            client.updateServerGame(SerializeAndDeserialize.serialize(board));
+            client.updateGameSituation(SaveAndLoad.serialize(board));
     }
+
 
     /**
      * Checks if a player is connected to an online game has his/hers turn.
      * This is determined by their id given from the server
      * @return
      */
-    public boolean isMyTurn() {
+    public boolean playerTurn() {
         return board.getCurrentPlayer() != board.getPlayer(playerNumber) && client != null;
 
     }
@@ -601,9 +615,8 @@ public class GameController {
         return playerNumber;
     }
 
-
-    private void removeSpamCard(Player player) {
-        player.getDmgcards().remove(Command.SPAM);
+    private void removeSpam(Player player) {
+        player.getDamagecards().remove(Command.SPAMDamge);
     }
 
     //
