@@ -74,13 +74,6 @@ public class SpaceView extends StackPane implements ViewObserver {
                 imageView.setRotate((90 * conveyorBelt.getHeading().ordinal()) % 360);
                 this.getChildren().add(imageView);
 
-                //Lasers
-            } else if (space.getActions().get(0) instanceof Laser laser) {
-                imageView = new ImageView(new Image("laser" + ".png"));
-                imageView.setRotate((90 * laser.getHeading().ordinal()) % 360);
-                this.getChildren().add(imageView);
-
-                //PushPanels
             } else if (space.getActions().get(0) instanceof PushPanel pushPanel) {
                 imageView = new ImageView(new Image("Images/pushPanel.png"));
                 imageView.setRotate((90 * pushPanel.getHeading().ordinal()) % 360);
@@ -93,7 +86,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
                 //Rotating Gear Right and Left
             } else if (space.getActions().get(0) instanceof RotatingGear rotatingGear) {
-                if (rotatingGear.getDirection() == RotatingGear.Direction.RIGHT) {
+                if (rotatingGear.getDirection() == RotatingGear.moveDirection.RIGHT) {
                     imageView = new ImageView(new Image("Images/rotatingGearRight.png"));
                 } else {
                     imageView = new ImageView(new Image("Images/rotatingGearLeft.png"));
