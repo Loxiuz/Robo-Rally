@@ -58,7 +58,7 @@ public class GameController {
         this.client = client;
 
         if (client != null) {
-            client.updateServerGame(SaveAndLoad.serialize(board));
+            client.updateGameSituation(SaveAndLoad.serialize(board));
             playerNumber = client.getRobotNumber();
             updater = new UpdateServerBoard();
             updater.setGameController(this);
@@ -92,9 +92,9 @@ public class GameController {
 
                     for (int j = 0; j < Player.NO_CARDS; j++) {
                         CommandCardField field = player.getCardField(j);
-                        if (!player.getDmgcards().isEmpty()) {
-                            if (player.getDmgcards().size() > j) {
-                                field.setCard(new CommandCard(player.getDmgcards().get(j)));
+                        if (!player.getDamagecards().isEmpty()) {
+                            if (player.getDamagecards().size() > j) {
+                                field.setCard(new CommandCard(player.getDamagecards().get(j)));
                             } else
                                 field.setCard(generateRandomCommandCard());
                         } else
@@ -315,6 +315,7 @@ public class GameController {
         }
     }
 
+
     // Control robot moves, robot move forward
     public static void moveForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
@@ -395,13 +396,13 @@ public class GameController {
             switch (command) {
                 case MOVE1 ->moveForward(player, 1);
                 case MOVE2 -> moveForward(player, 2);
-                case MOVE3, SPEEDROUTINE ->moveForward(player, 3);
+                case MOVE3->moveForward(player, 3);
                 case RIGHT -> turnRight(player);
                 case LEFT -> turnLeft(player);
                 case MOVEBACK ->moveBackward(player);
-                case AGAIN, REPEATROUTINE ->again(player, board.getStep());
-                case SPAM -> removeSpamCard(player);
-                case OPTION_LEFT_RIGHT, SANDBOXROUTINE, WEASELROUTINE -> board.setPhase(Phase.PLAYER_INTERACTION);
+                case AGAIN->again(player, board.getStep());
+                case SPAMDamge -> removeSpamCard(player);
+                case OPTION_LEFT_RIGHT -> board.setPhase(Phase.PLAYER_INTERACTION);
                 case UTURN -> uTurn(player);
 
                 default -> {
@@ -409,7 +410,7 @@ public class GameController {
 
             }
             if (client != null)
-                client.updateServerGame(SaveAndLoad.serialize(board));
+                client.updateGameSituation(SaveAndLoad.serialize(board));
         }
     }
 
@@ -489,12 +490,14 @@ public class GameController {
                     player.getSpace().getActions().get(0) instanceof RebootToken)
                 player.getSpace().getActions().get(0).doAction(this, player.getSpace());
         }
+
         //activate Pit
         for (Player player : players) {
             if (!player.getSpace().getActions().isEmpty() &&
-                    player.getSpace().getActions().get(0) instanceof Pit)
+                    player.getSpace().getActions().get(0) instanceof Pit){
                 player.getSpace().getActions().get(0).doAction(this, player.getSpace());
-        }
+
+        }}
 
 
         //activate checkpoints
@@ -524,7 +527,7 @@ public class GameController {
 
     public void pushGameSituation() {
         if (client != null)
-            client.updateServerGame(SaveAndLoad.serialize(board));
+            client.updateGameSituation(SaveAndLoad.serialize(board));
     }
 
 
@@ -545,7 +548,7 @@ public class GameController {
     }
 
     private void removeSpamCard(Player player) {
-        player.getDmgcards().remove(Command.SPAM);
+        player.getDamagecards().remove(Command.SPAMDamge);
     }
 
     // the winner get a massage when player got all the checkpoints on the board

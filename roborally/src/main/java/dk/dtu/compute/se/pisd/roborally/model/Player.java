@@ -146,6 +146,7 @@ public class Player extends Subject {
     }
 
 
+
     public CommandCardField getProgramField(int i) {
         return program[i];
     }
@@ -155,11 +156,11 @@ public class Player extends Subject {
     }
 
 
-    public void setDmgcards(Command card) {
+    public void setDamagecards(Command card) {
         this.damagecards.add(card);
     }
 
-    public ArrayList<Command> getDmgcards() {
+    public ArrayList<Command> getDamagecards() {
         return this.damagecards;
     }
 

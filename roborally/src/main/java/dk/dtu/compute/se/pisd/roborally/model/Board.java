@@ -44,7 +44,7 @@ public class Board extends Subject {
     public boolean stepMode;
     public boolean gameOver = false;
     private int numOfCheckPoints;
-
+    private int[] rebootlocation = new int[2];
     private List<Checkpoint> checkpoints = new ArrayList<Checkpoint>();
     private List<Player> players = new ArrayList<>();
 
@@ -232,6 +232,12 @@ public class Board extends Subject {
         findCheckPoints();
         Checkpoint.setlastCheckpointNumber(numOfCheckPoints);
     }
+
+    public void setRebootlocation(int x, int y){
+        rebootlocation[0] = x; rebootlocation[1]=y;
+    }
+    public int[] getRebootlocation(){return this.rebootlocation;}
+
 
     private void findCheckPoints() {
         int counter = 0;
